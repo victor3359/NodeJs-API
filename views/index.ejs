@@ -10,12 +10,13 @@
   <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
   <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
   <script src="https://www.amcharts.com/lib/3/themes/dark.js"></script>
+  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
 </head>
 <body>
 <h1><%= title %></h1>
 <p>Welcome to <%= title %></p>
 
-<div id="chartdiv"></div>
+<div id=<%= chart %>></div>
 
 <script>
     var chartData1 = [];
@@ -27,7 +28,6 @@
 
     function generateChartData() {
         var firstDate = new Date();
-        alert(firstDate.getFullYear() + '/' + firstDate.getMonth() + '/' + firstDate.getDate());
         firstDate.setDate( firstDate.getDate() - 500 );
         firstDate.setHours( 0, 0, 0, 0 );
         var a1 = 1500;
