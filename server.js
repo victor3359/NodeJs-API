@@ -1,12 +1,13 @@
 var express = require('express');
 var app = express();
 var port = 8080;
+var cors = require('cors');
 //var mongoose = require('mongoose');
 var mongodb = require('mongodb').MongoClient;
 
 var url = "mongodb://192.168.100.181:27017/hok";
 
-
+app.use(cors());
 var route = express.Router();
 
 route.get('/', function(req, res){
@@ -27,19 +28,17 @@ route.get('/r402', function(req, res){
         db.collection('Device_info').find({Room_num: '402'}).sort({_id:-1}).limit(1).toArray(function (mongoError, objects) {
             if(mongoError)throw mongoError;
             res.send(objects);
-            console.log('Found '+objects.length+' Results.');
             db.close();
         });
     });
 });
 
-route.get('/r201', function(req, res){
+route.get('/r402a', function(req, res){
     mongodb.connect(url, function (err, db) {
         if(err)throw err;
-        db.collection('Device_info').find({Room_num: '201'}).sort({_id:-1}).limit(1).toArray(function (mongoError, objects) {
+        db.collection('Device_info').find({Room_num: '402'}).sort({_id:-1}).limit(3600).toArray(function (mongoError, objects) {
             if(mongoError)throw mongoError;
             res.send(objects);
-            console.log('Found '+objects.length+' Results.');
             db.close();
         });
     });

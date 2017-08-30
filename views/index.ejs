@@ -2,8 +2,11 @@
 <html>
 <head>
   <title><%= title %></title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
   <link rel='stylesheet' href='/stylesheets/style.css' />
   <link rel='stylesheet' href='/stylesheets/coolchart.css' />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css"/>
   <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
   <script src="https://www.amcharts.com/lib/3/serial.js"></script>
   <script src="https://www.amcharts.com/lib/3/amstock.js"></script>
@@ -11,194 +14,296 @@
   <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
   <script src="https://www.amcharts.com/lib/3/themes/dark.js"></script>
   <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
 </head>
 <body>
 <h1><%= title %></h1>
 <p>Welcome to <%= title %></p>
 
 <div id=<%= chart %>></div>
+<div class="row">
+  <div class="col-sm-3">
+    <h3>WC Status</h3>
+    <h5>Light Status:
+      <b id="wc_ls">
+        Loading...
+      </b>
+    </h5>
+    <h5>Switch Status:
+      <b id="wc_ss">
+        Loading...
+      </b>
+    </h5>
+    <button class="btn btn-success">On</button>
+    <button class="btn btn-danger">Off</button>
+  </div>
+  <div class="col-sm-3">
+    <h3>Windows Status</h3>
+    <h5>Light Status:
+      <b id="wd_ls">
+        Loading...
+      </b>
+    </h5>
+    <h5>Switch Status:
+      <b id="wd_ss">
+        Loading...
+      </b>
+    </h5>
+    <button class="btn btn-success">On</button>
+    <button class="btn btn-danger">Off</button>
+  </div>
+  <div class="col-sm-3">
+    <h3>Room Light Status</h3>
+    <h5>Switch Status:
+      <b id="rm_ss">
+        Loading...
+      </b>
+    </h5>
+    <h5>LightC1 Status:
+      <b id="rm_c1">
+        Loading...
+      </b>
+    </h5>
+    <h5>LightC2 Status:
+      <b id="rm_c2">
+        Loading...
+      </b>
+    </h5>
+    <h5>LightC3 Status:
+      <b id="rm_c3">
+        Loading...
+      </b>
+    </h5>
+    <button class="btn btn-success">On</button>
+    <button class="btn btn-danger">Off</button>
+  </div>
+  <div class="col-sm-3">
+    <h3>BedLeft Status</h3>
+    <h5>Switch Status:
+      <b id="bd_ss">
+        Loading...
+      </b>
+    </h5>
+    <h5>LightC1 Status:
+      <b id="bd_c1">
+        Loading...
+      </b>
+    </h5>
+    <h5>LightC2 Status:
+      <b id="bd_c2">
+        Loading...
+      </b>
+    </h5>
+    <button class="btn btn-success">On</button>
+    <button class="btn btn-danger">Off</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-3">
+    <h3>Situation Status</h3>
+    <h5>Left Switch Status:
+      <b id="ss_l">
+        Loading...
+      </b>
+    </h5>
+    <h5>Right Switch Status:
+      <b id="ss_r">
+        Loading...
+      </b>
+    </h5>
+    <button class="btn btn-success">On</button>
+    <button class="btn btn-danger">Off</button>
+  </div>
+  <div class="col-sm-3">
+    <h3>Energy Saving Status</h3>
+    <h5>Switch Status:
+      <b id="ess_ss">
+        Loading...
+      </b>
+    </h5>
+    <button class="btn btn-success">On</button>
+    <button class="btn btn-danger">Off</button>
+  </div>
+</div>
 
-<script>
-    var chartData1 = [];
-    var chartData2 = [];
-    var chartData3 = [];
-    var chartData4 = [];
+<p id="demo"></p>
+<p id="demo2"></p>
+<p id="demo3"></p>
+<p id="demo4"></p>
+<p id="demo5"></p>
 
-    generateChartData();
-
-    function generateChartData() {
-        var firstDate = new Date();
-        firstDate.setDate( firstDate.getDate() - 500 );
-        firstDate.setHours( 0, 0, 0, 0 );
-        var a1 = 1500;
-        var b1 = 1500;
-        var a2 = 1700;
-        var b2  = 1700;
-        var a3 = 1600;
-        var b3 = 1600;
-        var a4 = 1400;
-        var b4 = 1400;
-
-        for ( var i = 0; i < 500; i++ ) {
-            var newDate = new Date( firstDate );
-            newDate.setDate( newDate.getDate() + i );
-
-            a1 += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-            b1 += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-
-            a2 += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-            b2 += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-
-            a3 += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-            b3 += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-
-            a4 += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-            b4 += Math.round((Math.random()<0.5?1:-1)*Math.random()*10);
-
-            chartData1.push( {
-                "date": newDate,
-                "value": a1,
-                "volume": a1
-            } );
-            chartData2.push( {
-                "date": newDate,
-                "value": a2,
-                "volume": b2 + 1500
-            } );
-            chartData3.push( {
-                "date": newDate,
-                "value": a3,
-                "volume": b3 + 1500
-            } );
-            chartData4.push( {
-                "date": newDate,
-                "value": a4,
-                "volume": b4 + 1500
-            } );
+<script type="text/javascript">
+    var data = [];
+    function state(name, flag){
+        if(flag) {
+            document.getElementById(name).innerHTML = 'On';
+        }else{
+            document.getElementById(name).innerHTML = 'Off';
         }
     }
-
-    var chart = AmCharts.makeChart( "chartdiv", {
-        "type": "stock",
-        "theme": "dark",
-        "dataSets": [ {
-            "title": "first data set",
-            "fieldMappings": [ {
-                "fromField": "value",
-                "toField": "value"
-            }, {
-                "fromField": "volume",
-                "toField": "volume"
-            } ],
-            "dataProvider": chartData1,
-            "categoryField": "date"
-        }, {
-            "title": "second data set",
-            "fieldMappings": [ {
-                "fromField": "value",
-                "toField": "value"
-            }, {
-                "fromField": "volume",
-                "toField": "volume"
-            } ],
-            "dataProvider": chartData2,
-            "categoryField": "date"
-        }, {
-            "title": "third data set",
-            "fieldMappings": [ {
-                "fromField": "value",
-                "toField": "value"
-            }, {
-                "fromField": "volume",
-                "toField": "volume"
-            } ],
-            "dataProvider": chartData3,
-            "categoryField": "date"
-        }, {
-            "title": "fourth data set",
-            "fieldMappings": [ {
-                "fromField": "value",
-                "toField": "value"
-            }, {
-                "fromField": "volume",
-                "toField": "volume"
-            } ],
-            "dataProvider": chartData4,
-            "categoryField": "date"
-        }
-        ],
-
-        "panels": [ {
-            "showCategoryAxis": false,
-            "title": "Value",
-            "percentHeight": 70,
-            "stockGraphs": [ {
-                "id": "g1",
-                "valueField": "value",
-                "comparable": true,
-                "compareField": "value",
-                "balloonText": "[[title]]:<b>[[value]]</b>",
-                "compareGraphBalloonText": "[[title]]:<b>[[value]]</b>"
-            } ],
-            "stockLegend": {
-                "periodValueTextComparing": "[[percents.value.close]]%",
-                "periodValueTextRegular": "[[value.close]]"
+    function Init402() {
+        var url = "http://localhost:8080/r402a";
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if(this.readyState == 4 && this.status == 200){
+                var json = JSON.parse(xhttp.responseText);
+                for(var i=1000;i>=0;i--) {
+                    data.push({
+                        hok402_w: parseFloat(json[i]['kW_tot'])*1000,
+                        hok402_v: parseFloat(json[i]['V_c']),
+                        date: json[i]['datetime']
+                    });
+                }
             }
-        }, {
-            "title": "Volume",
-            "percentHeight": 30,
-            "stockGraphs": [ {
-                "valueField": "volume",
-                "type": "column",
-                "showBalloon": false,
-                "fillAlphas": 1
-            } ],
-            "stockLegend": {
-                "periodValueTextRegular": "[[value.close]]"
-            }
-        } ],
-
-        "chartScrollbarSettings": {
-            "graph": "g1"
-        },
-
-        "chartCursorSettings": {
-            "valueBalloonsEnabled": true,
-            "fullWidth": true,
-            "cursorAlpha": 0.1,
-            "valueLineBalloonEnabled": true,
-            "valueLineEnabled": true,
-            "valueLineAlpha": 0.5
-        },
-
-        "periodSelector": {
-            "position": "left",
-            "periods": [ {
-                "period": "MM",
-                "selected": true,
-                "count": 1,
-                "label": "1 month"
-            }, {
-                "period": "YYYY",
-                "count": 1,
-                "label": "1 year"
-            }, {
-                "period": "YTD",
-                "label": "YTD"
-            }, {
-                "period": "MAX",
-                "label": "MAX"
-            } ]
-        },
-
-        "dataSetSelector": {
-            "position": "left"
-        },
-
-        "export": {
-            "enabled": true
         }
-    } );
+        xhttp.open("GET", url, true);
+        xhttp.send(null);
+    }
+    function update() {
+        var url = "http://localhost:8080/r402";
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                // Typical action to be performed when the document is ready:
+                var json = JSON.parse(xhttp.responseText);
+                if(json[0]['wc_light_status']){
+                    state("wc_ls", 1);
+                }else{
+                    state("wc_ls", 0);
+                }
+                if(json[0]['wc_switch_status']){
+                    state("wc_ss", 1);
+                }else{
+                    state("wc_ss", 0);
+                }
+                if(json[0]['windows_light_status']){
+                    state("wd_ls", 1);
+                }else{
+                    state("wd_ls", 0);
+                }
+                if(json[0]['windows_switch_status']){
+                    state("wd_ss", 1);
+                }else{
+                    state("wd_ss", 0);
+                }
+                if(json[0]['Room_lights_switch_status']){
+                    state("rm_ss", 1);
+                }else{
+                    state("rm_ss", 0);
+                }
+                if(json[0]['Room_lights_C1']){
+                    state("rm_c1", 1);
+                }else{
+                    state("rm_c1", 0);
+                }
+                if(json[0]['Room_lights_C2']){
+                    state("rm_c2", 1);
+                }else{
+                    state("rm_c2", 0);
+                }
+                if(json[0]['Room_lights_C3']){
+                    state("rm_c3", 1);
+                }else{
+                    state("rm_c3", 0);
+                }
+                if(json[0]['BedLeft_lights_switch_status']){
+                    state("bd_ss", 1);
+                }else{
+                    state("bd_ss", 0);
+                }
+                if(json[0]['BedLeft_lights_C1']){
+                    state("bd_c1", 1);
+                }else{
+                    state("bd_c1", 0);
+                }
+                if(json[0]['BedLeft_lights_C2']){
+                    state("bd_c2", 1);
+                }else{
+                    state("bd_c2", 0);
+                }
+                if(json[0]['LeftSituation_switch_status']){
+                    state("ss_l", 1);
+                }else {
+                    state("ss_l", 0);
+                }
+                if(json[0]['RightSituation_switch_status']){
+                    state("ss_r", 1);
+                }else{
+                    state("ss_r", 0);
+                }
+                if(json[0]['EnergySaving_switch_status']){
+                    state("ess_ss", 1);
+                }else{
+                    state("ess_ss", 0);
+                }
+                data.push({
+                    hok402_w: parseFloat(json[0]['kW_tot']) * 1000,
+                    hok402_v: parseFloat( json[0]['V_c']),
+                    date: json[0]['datetime']
+                });
+                AmCharts.makeChart("chartdiv",
+                    {
+                        "type": "serial",
+                        "categoryField": "date",
+                        "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
+                        "categoryAxis": {
+                            "minPeriod": "ss",
+                            "parseDates": true
+                        },
+                        "chartCursor": {
+                            "enabled": true,
+                            "categoryBalloonDateFormat": "JJ:NN:SS"
+                        },
+                        "chartScrollbar": {
+                            "enabled": true
+                        },
+                        "trendLines": [],
+                        "graphs": [
+                            {
+                                "bullet": "round",
+                                "id": "AmGraph-1",
+                                "title": "W",
+                                "valueField": "hok402_w"
+                            },
+                            {
+                                "bullet": "square",
+                                "id": "AmGraph-2",
+                                "title": "V",
+                                "valueField": "hok402_v"
+                            }
+                        ],
+                        "guides": [],
+                        "valueAxes": [
+                            {
+                                "id": "ValueAxis-1",
+                                "title": "Power"
+                            }
+                        ],
+                        "allLabels": [],
+                        "balloon": {},
+                        "legend": {
+                            "enabled": true,
+                            "useGraphSettings": true
+                        },
+                        "titles": [
+                            {
+                                "id": "Hok_402",
+                                "size": 15,
+                                "text": "Hok 402"
+                            }
+                        ],
+                        "dataProvider": data
+                    }
+                );
+            }
+        };
+        xhttp.open("GET", url, true);
+        xhttp.send(null);
+    }
+    Init402();
+    setInterval(update, 2000);
+
 </script>
 </body>
 </html>
