@@ -93,4 +93,32 @@ sio.sockets.on('connection', function (socket) {
             client.publish('hok/402/light/wc', 'OFF');
         }
     });
+    socket.on('WDLight', function (data) {
+        if(data == 'ON'){
+            client.publish('hok/402/light/window', 'ON');
+        }else{
+            client.publish('hok/402/light/window', 'OFF');
+        }
+    });
+    socket.on('RMLight', function (data) {
+        if(data == 'ON'){
+            client.publish('hok/402/light/guest', 'ON');
+        }else{
+            client.publish('hok/402/light/guest', 'OFF');
+        }
+    });
+    socket.on('BDLeftLight', function (data) {
+        if(data == 'ON'){
+            client.publish('hok/402/light/bed_left', 'ON');
+        }else{
+            client.publish('hok/402/light/bed_left', 'OFF');
+        }
+    });
+    socket.on('BDLeftLight', function (data) {
+        if(data == 'ON'){
+            client.publish('hok/402/light/bed_right', 'ON');
+        }else{
+            client.publish('hok/402/light/bed_right', 'OFF');
+        }
+    });
 });

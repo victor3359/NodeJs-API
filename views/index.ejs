@@ -23,34 +23,145 @@
   <script src="javascripts/circular-progress-jquery.js"></script>
 
   <script>
-    $(document).ready(function() {
-        var socket = io.connect('http://localhost:10000');
-        $('#wc_lon').click(function () {
-            socket.emit('WCLight', 'ON');
-        });
-        $('#wc_loff').click(function () {
-            socket.emit('WCLight', 'OFF');
-        });
-    });
+      $(document).ready(function() {
+          var socket = io.connect('http://localhost:10000');
+          $('#wc_lon').click(function () {
+              socket.emit('WCLight', 'ON');
+          });
+          $('#wc_loff').click(function () {
+              socket.emit('WCLight', 'OFF');
+          });
+          $('#wd_lon').click(function () {
+              socket.emit('WDLight', 'ON');
+          });
+          $('#wd_loff').click(function () {
+              socket.emit('WDLight', 'OFF')
+          });
+          $('#rm_lon').click(function () {
+              socket.emit('RMLight', 'ON');
+          });
+          $('#rm_loff').click(function () {
+              socket.emit('RMLight', 'OFF');
+          });
+          $('#blc1_lon').click(function () {
+              socket.emit('BDLeftLight', 'ON');
+          })
+          $('#blc1_loff').click(function () {
+              socket.emit('BDLeftLight', 'OFF');
+          });
+          $('#blc2_lon').click(function () {
+              socket.emit('BDRightLight', 'ON');
+          });
+          $('#blc2_loff').click(function () {
+              socket.emit('BDRightLight', 'OFF');
+          })
+      });
   </script>
+
+  <style type="text/css">
+    #sitebody{
+      width:100%;
+      margin:0 auto;
+      font-size:13px;
+    }
+    #header{
+      margin:10px;
+      background-color:#FFD4D4;
+      height:80px;
+      text-align:center;
+      line-height:80px;
+    }
+    #web_intro{
+      background-color:#FFECC9;
+      width:50%;
+      margin-top:10px;
+      text-align:center;
+      line-height:300px;
+      float:left;
+    }
+    #rt_block{
+      background-color:#FFECC9;
+      width:30%;
+      margin-top:10px;
+      margin-left:10px;
+      text-align:center;
+      line-height:300px;
+      float:left;
+    }
+    #sw_block{
+      background-color:#FFECC9;
+      width:20%;
+      margin-top:10px;
+      margin-left:10px;
+      text-align:center;
+      line-height:390px;
+      float:left;
+    }
+    #err_block{
+      background-color:#FFECC9;
+      width:17%;
+      margin-top:10px;
+      margin-right:10px;
+      text-align:center;
+      line-height:700px;
+      float:right;
+    }
+    #chart_block{
+      width:60%;
+      margin-top:10px;
+      background-color:#F2FFF2;
+      text-align:center;
+      line-height:390px;
+      float:left;
+    }
+    #footer{
+      clear:both;
+      margin-top: 700px;
+      background-color:#FFD4D4;
+      height:80px;
+      text-align:center;
+      line-height:80px;
+    }
+  </style>
 </head>
 <body>
-<div class="row">
-  <div class="col-sm-3">
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+<!--
+<div id="sitebody">
+  　<div id="header">
+    <div class="row">
+      <div class="col-sm-3">
+        <h1><%= title %></h1>
+      </div>
+      <div class="col-sm-8">
+        <ul class="nav nav-tabs">
+          <li><a href="rm201">Room 201</a></li>
+          <li><a href="rm202">Room 202</a></li>
+          <li><a href="rm301">Room 301</a></li>
+          <li><a href="rm302">Room 302</a></li>
+          <li><a href="rm401">Room 401</a></li>
+          <li><a href="index">Room 402</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <div class="col-sm-8">
-    <ul class="nav nav-tabs">
-      <li><a href="rm201">Room 201</a></li>
-      <li><a href="rm202">Room 202</a></li>
-      <li><a href="rm301">Room 301</a></li>
-      <li><a href="rm302">Room 302</a></li>
-      <li><a href="rm401">Room 401</a></li>
-      <li><a href="index">Room 402</a></li>
-    </ul>
+  　<div id="web_intro">
+    <div class="row">
+      <div class="col-xs-6">87</div>
+      <div class="col-xs-6">
+
+      </div>
+    </div>
   </div>
-</div>
+  　<div id="rt_block">RealTime</div>
+  　<div id="err_block">Error</div>
+  　<div id="chart_block">Chart</div>
+  　<div id="sw_block">Switch</div>
+  　<div id="footer">Footer</div>
+</div>-->
+
+
+
+
 <div id=<%= chart %>></div>
 <div class="row">
   <div class="col-sm-3">
@@ -80,8 +191,8 @@
         Loading...
       </b>
     </h5>
-    <button class="btn btn-success">On</button>
-    <button class="btn btn-danger">Off</button>
+    <button id="wd_lon" class="btn btn-success">On</button>
+    <button id="wd_loff" class="btn btn-danger">Off</button>
   </div>
   <div class="col-sm-3">
     <h3>Room Light Status</h3>
@@ -105,8 +216,8 @@
         Loading...
       </b>
     </h5>
-    <button class="btn btn-success">On</button>
-    <button class="btn btn-danger">Off</button>
+    <button id="rm_lon" class="btn btn-success">On</button>
+    <button id="rm_loff" class="btn btn-danger">Off</button>
   </div>
   <div class="col-sm-3">
     <h3>BedLeft Status</h3>
@@ -125,8 +236,10 @@
         Loading...
       </b>
     </h5>
-    <button class="btn btn-success">On</button>
-    <button class="btn btn-danger">Off</button>
+    <button id="blc1_lon" class="btn btn-success">On</button>
+    <button id="blc1_loff" class="btn btn-danger">Off</button>
+    <button id="blc2_lon" class="btn btn-success">On</button>
+    <button id="blc2_loff" class="btn btn-danger">Off</button>
   </div>
 </div>
 <div class="row">
@@ -142,8 +255,6 @@
         Loading...
       </b>
     </h5>
-    <button class="btn btn-success">On</button>
-    <button class="btn btn-danger">Off</button>
   </div>
   <div class="col-sm-3">
     <h3>Energy Saving Status</h3>
@@ -152,8 +263,6 @@
         Loading...
       </b>
     </h5>
-    <button class="btn btn-success">On</button>
-    <button class="btn btn-danger">Off</button>
   </div>
   <div class="col-sm-3">
     <h3>Power Status</h3>
