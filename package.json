@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "body-parser": "~1.17.1",
+    "canvasjs": "^1.8.1",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
     "debug": "~2.6.3",
@@ -18,9 +19,11 @@
     "mongodb": "^2.2.31",
     "mongoose": "^4.11.9",
     "morgan": "~1.8.1",
+    "mqtt": "^2.12.0",
     "passport": "^0.4.0",
     "passport-google": "^0.3.0",
     "request": "^2.81.0",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
+    "socket.io": "^2.0.3"
   }
 }

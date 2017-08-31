@@ -16,11 +16,41 @@
   <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+  <!--  Todo: Circle Chart -->
+  <script src="javascripts/jquery.min.js"></script>
+  <script src="javascripts/circular-progress-jquery.js"></script>
+
+  <script>
+    $(document).ready(function() {
+        var socket = io.connect('http://localhost:10000');
+        $('#wc_lon').click(function () {
+            socket.emit('WCLight', 'ON');
+        });
+        $('#wc_loff').click(function () {
+            socket.emit('WCLight', 'OFF');
+        });
+    });
+  </script>
 </head>
 <body>
-<h1><%= title %></h1>
-<p>Welcome to <%= title %></p>
-
+<div class="row">
+  <div class="col-sm-3">
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+  </div>
+  <div class="col-sm-8">
+    <ul class="nav nav-tabs">
+      <li><a href="rm201">Room 201</a></li>
+      <li><a href="rm202">Room 202</a></li>
+      <li><a href="rm301">Room 301</a></li>
+      <li><a href="rm302">Room 302</a></li>
+      <li><a href="rm401">Room 401</a></li>
+      <li><a href="index">Room 402</a></li>
+    </ul>
+  </div>
+</div>
 <div id=<%= chart %>></div>
 <div class="row">
   <div class="col-sm-3">
@@ -35,8 +65,8 @@
         Loading...
       </b>
     </h5>
-    <button class="btn btn-success">On</button>
-    <button class="btn btn-danger">Off</button>
+    <button id="wc_lon" class="btn btn-success">On</button>
+    <button id="wc_loff" class="btn btn-danger">Off</button>
   </div>
   <div class="col-sm-3">
     <h3>Windows Status</h3>
@@ -125,6 +155,19 @@
     <button class="btn btn-success">On</button>
     <button class="btn btn-danger">Off</button>
   </div>
+  <div class="col-sm-3">
+    <h3>Power Status</h3>
+    <h5>Average Voltage:
+      <b id="avg_v">
+        Loading...
+      </b>
+    </h5>
+    <h5>Average Current:
+      <b id="avg_i">
+        Loading...
+      </b>
+    </h5>
+  </div>
 </div>
 
 <p id="demo"></p>
@@ -132,6 +175,7 @@
 <p id="demo3"></p>
 <p id="demo4"></p>
 <p id="demo5"></p>
+
 
 <script type="text/javascript">
     var data = [];
@@ -142,25 +186,76 @@
             document.getElementById(name).innerHTML = 'Off';
         }
     }
+    function setText(name, value) {
+        document.getElementById(name).innerHTML = value;
+    }
     function Init402() {
         var url = "http://localhost:8080/r402a";
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if(this.readyState == 4 && this.status == 200){
                 var json = JSON.parse(xhttp.responseText);
-                for(var i=1000;i>=0;i--) {
+                for(var i=4999;i>=0;i--) {
                     data.push({
                         hok402_w: parseFloat(json[i]['kW_tot'])*1000,
-                        hok402_v: parseFloat(json[i]['V_c']),
                         date: json[i]['datetime']
                     });
                 }
+                setInterval(newdata, 1000);
+                AmCharts.makeChart("chartdiv",
+                    {
+                        "type": "serial",
+                        "categoryField": "date",
+                        "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
+                        "categoryAxis": {
+                            "minPeriod": "ss",
+                            "parseDates": true
+                        },
+                        "chartCursor": {
+                            "enabled": true,
+                            "categoryBalloonDateFormat": "JJ:NN:SS"
+                        },
+                        "chartScrollbar": {
+                            "enabled": true
+                        },
+                        "trendLines": [],
+                        "graphs": [
+                            {
+                                "bullet": "round",
+                                "id": "AmGraph-1",
+                                "title": "W",
+                                "valueField": "hok402_w"
+                            }
+                        ],
+                        "guides": [],
+                        "valueAxes": [
+                            {
+                                "id": "ValueAxis-1",
+                                "title": "Power"
+                            }
+                        ],
+                        "allLabels": [],
+                        "balloon": {},
+                        "legend": {
+                            "enabled": true,
+                            "useGraphSettings": true
+                        },
+                        "titles": [
+                            {
+                                "id": "Hok_402",
+                                "size": 15,
+                                "text": "Hok_402"
+                            }
+                        ],
+                        "dataProvider": data
+                    }
+                );
             }
         }
         xhttp.open("GET", url, true);
         xhttp.send(null);
     }
-    function update() {
+    function newdata() {
         var url = "http://localhost:8080/r402";
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -192,21 +287,6 @@
                 }else{
                     state("rm_ss", 0);
                 }
-                if(json[0]['Room_lights_C1']){
-                    state("rm_c1", 1);
-                }else{
-                    state("rm_c1", 0);
-                }
-                if(json[0]['Room_lights_C2']){
-                    state("rm_c2", 1);
-                }else{
-                    state("rm_c2", 0);
-                }
-                if(json[0]['Room_lights_C3']){
-                    state("rm_c3", 1);
-                }else{
-                    state("rm_c3", 0);
-                }
                 if(json[0]['BedLeft_lights_switch_status']){
                     state("bd_ss", 1);
                 }else{
@@ -237,73 +317,76 @@
                 }else{
                     state("ess_ss", 0);
                 }
+                setText("avg_v", json[0]['V_avg']);
+                setText("avg_i", json[0]['I_avg']);
+                setText("rm_c1", json[0]['Room_lights_C1']+ " %");
+                setText("rm_c2", json[0]['Room_lights_C2']+ " %");
+                setText("rm_c3", json[0]['Room_lights_C3']+ " %");
+                setText("bd_c1", json[0]['BedLeft_lights_C1']+ " %");
+                setText("bd_c2", json[0]['BedRight_lights_C1']+ " %");
+
                 data.push({
                     hok402_w: parseFloat(json[0]['kW_tot']) * 1000,
-                    hok402_v: parseFloat( json[0]['V_c']),
                     date: json[0]['datetime']
                 });
-                AmCharts.makeChart("chartdiv",
-                    {
-                        "type": "serial",
-                        "categoryField": "date",
-                        "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
-                        "categoryAxis": {
-                            "minPeriod": "ss",
-                            "parseDates": true
-                        },
-                        "chartCursor": {
-                            "enabled": true,
-                            "categoryBalloonDateFormat": "JJ:NN:SS"
-                        },
-                        "chartScrollbar": {
-                            "enabled": true
-                        },
-                        "trendLines": [],
-                        "graphs": [
-                            {
-                                "bullet": "round",
-                                "id": "AmGraph-1",
-                                "title": "W",
-                                "valueField": "hok402_w"
-                            },
-                            {
-                                "bullet": "square",
-                                "id": "AmGraph-2",
-                                "title": "V",
-                                "valueField": "hok402_v"
-                            }
-                        ],
-                        "guides": [],
-                        "valueAxes": [
-                            {
-                                "id": "ValueAxis-1",
-                                "title": "Power"
-                            }
-                        ],
-                        "allLabels": [],
-                        "balloon": {},
-                        "legend": {
-                            "enabled": true,
-                            "useGraphSettings": true
-                        },
-                        "titles": [
-                            {
-                                "id": "Hok_402",
-                                "size": 15,
-                                "text": "Hok 402"
-                            }
-                        ],
-                        "dataProvider": data
-                    }
-                );
             }
         };
         xhttp.open("GET", url, true);
         xhttp.send(null);
     }
-    Init402();
-    setInterval(update, 2000);
+    function update() {
+        AmCharts.makeChart("chartdiv",
+            {
+                "type": "serial",
+                "categoryField": "date",
+                "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
+                "categoryAxis": {
+                    "minPeriod": "ss",
+                    "parseDates": true
+                },
+                "chartCursor": {
+                    "enabled": true,
+                    "categoryBalloonDateFormat": "JJ:NN:SS"
+                },
+                "chartScrollbar": {
+                    "enabled": true
+                },
+                "trendLines": [],
+                "graphs": [
+                    {
+                        "bullet": "round",
+                        "id": "AmGraph-1",
+                        "title": "W",
+                        "valueField": "hok402_w"
+                    }
+                ],
+                "guides": [],
+                "valueAxes": [
+                    {
+                        "id": "ValueAxis-1",
+                        "title": "Power"
+                    }
+                ],
+                "allLabels": [],
+                "balloon": {},
+                "legend": {
+                    "enabled": true,
+                    "useGraphSettings": true
+                },
+                "titles": [
+                    {
+                        "id": "Hok_402",
+                        "size": 15,
+                        "text": "Hok_402"
+                    }
+                ],
+                "dataProvider": data
+            }
+        );
+    }
 
+    Init402();
+    setInterval(update, 10000);
 </script>
 </body>
 </html>

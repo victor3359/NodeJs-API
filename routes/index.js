@@ -21,5 +21,12 @@ router.get('/', function (req, res, next) {
         chart: 'chartdiv'
     });
 });
+router.get('/rm401', function (req, res, next) {
+    res.render('rm401', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+
 
 module.exports = router;

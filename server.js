@@ -36,7 +36,28 @@ route.get('/r402', function(req, res){
 route.get('/r402a', function(req, res){
     mongodb.connect(url, function (err, db) {
         if(err)throw err;
-        db.collection('Device_info').find({Room_num: '402'}).sort({_id:-1}).limit(3600).toArray(function (mongoError, objects) {
+        db.collection('Device_info').find({Room_num: '402'}).sort({_id:-1}).limit(5000).toArray(function (mongoError, objects) {
+            if(mongoError)throw mongoError;
+            res.send(objects);
+            db.close();
+        });
+    });
+});
+
+route.get('/r401a', function(req, res){
+    mongodb.connect(url, function (err, db) {
+        if(err)throw err;
+        db.collection('Device_info').find({Room_num: '401'}).sort({_id:-1}).limit(2000).toArray(function (mongoError, objects) {
+            if(mongoError)throw mongoError;
+            res.send(objects);
+            db.close();
+        });
+    });
+});
+route.get('/r401', function(req, res){
+    mongodb.connect(url, function (err, db) {
+        if(err)throw err;
+        db.collection('Device_info').find({Room_num: '401'}).sort({_id:-1}).limit(1).toArray(function (mongoError, objects) {
             if(mongoError)throw mongoError;
             res.send(objects);
             db.close();
@@ -45,8 +66,31 @@ route.get('/r402a', function(req, res){
 });
 
 
-
 app.use('/', route);
 //Start the server
 app.listen(port);
-console.log('Big5-API is listening on port ' + port)
+console.log('Big5-API is listening on port ' + port);
+
+
+var io = require('socket.io');
+var mqtt = require('mqtt');
+var opt = {
+    port: 1883,
+    clientId: 'nodejs'
+};
+var client = mqtt.connect('tcp://122.117.135.215');
+
+client.on('connect', function () {
+    console.log('connected to WISE server');
+});
+var sio = io.listen(10000);
+sio.sockets.on('connection', function (socket) {
+    socket.on('WCLight', function (data) {
+        console.log(data);
+        if(data == 'ON'){
+            client.publish('hok/402/light/wc', 'ON');
+        }else{
+            client.publish('hok/402/light/wc', 'OFF');
+        }
+    });
+});
