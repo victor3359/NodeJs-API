@@ -2,6 +2,10 @@
 <html>
 <head>
   <title><%= title %></title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
   <link rel='stylesheet' href='/stylesheets/style.css' />
@@ -63,6 +67,7 @@
       width:100%;
       margin:0 auto;
       font-size:13px;
+      overflow:hidden;
     }
     #header{
       margin:10px;
@@ -74,9 +79,20 @@
     #web_intro{
       background-color:#FFECC9;
       width:50%;
+      margin-left:10px;
       margin-top:10px;
       text-align:center;
       line-height:300px;
+      overflow:hidden;
+      float:left;
+    }
+    .item{
+      background-color:#ffff00;
+      width:48%;
+      margin-top:10px;
+      margin-left:10px;
+      line-height:140px;
+      text-align:center;
       float:left;
     }
     #rt_block{
@@ -109,6 +125,7 @@
     #chart_block{
       width:60%;
       margin-top:10px;
+      margin-left:10px;
       background-color:#F2FFF2;
       text-align:center;
       line-height:390px;
@@ -125,7 +142,6 @@
   </style>
 </head>
 <body>
-<!--
 <div id="sitebody">
   　<div id="header">
     <div class="row">
@@ -145,11 +161,17 @@
     </div>
   </div>
   　<div id="web_intro">
-    <div class="row">
-      <div class="col-xs-6">87</div>
-      <div class="col-xs-6">
-
-      </div>
+    <div class="item">
+      123
+    </div>
+    <span class="item">
+      123
+    </span>
+    <div class="item">
+      123
+    </div>
+    <div class="item">
+      123
     </div>
   </div>
   　<div id="rt_block">RealTime</div>
@@ -157,10 +179,9 @@
   　<div id="chart_block">Chart</div>
   　<div id="sw_block">Switch</div>
   　<div id="footer">Footer</div>
-</div>-->
+</div>
 
-
-
+<h1><%= title %></h1>
 
 <div id=<%= chart %>></div>
 <div class="row">
@@ -238,8 +259,8 @@
     </h5>
     <button id="blc1_lon" class="btn btn-success">On</button>
     <button id="blc1_loff" class="btn btn-danger">Off</button>
-    <button id="blc2_lon" class="btn btn-success">On</button>
-    <button id="blc2_loff" class="btn btn-danger">Off</button>
+    <!--<button id="blc2_lon" class="btn btn-success">On</button>
+    <button id="blc2_loff" class="btn btn-danger">Off</button>-->
   </div>
 </div>
 <div class="row">
@@ -284,6 +305,7 @@
 <p id="demo3"></p>
 <p id="demo4"></p>
 <p id="demo5"></p>
+
 
 
 <script type="text/javascript">
@@ -428,11 +450,11 @@
                 }
                 setText("avg_v", json[0]['V_avg']);
                 setText("avg_i", json[0]['I_avg']);
-                setText("rm_c1", json[0]['Room_lights_C1']+ " %");
-                setText("rm_c2", json[0]['Room_lights_C2']+ " %");
-                setText("rm_c3", json[0]['Room_lights_C3']+ " %");
-                setText("bd_c1", json[0]['BedLeft_lights_C1']+ " %");
-                setText("bd_c2", json[0]['BedRight_lights_C1']+ " %");
+                setText("rm_c1", (json[0]['Room_lights_C1'] / 3000) * 100+ " %");
+                setText("rm_c2", (json[0]['Room_lights_C1'] / 3000) * 100+ " %");
+                setText("rm_c3", (json[0]['Room_lights_C1'] / 3000) * 100+ " %");
+                setText("bd_c1", (json[0]['BedLeft_lights_C1'] / 3000) * 100+ " %");
+                setText("bd_c2", (json[0]['BedRight_lights_C1'] / 3000) * 100+ " %");
 
                 data.push({
                     hok402_w: parseFloat(json[0]['kW_tot']) * 1000,

@@ -78,15 +78,15 @@ var opt = {
     port: 1883,
     clientId: 'nodejs'
 };
-var client = mqtt.connect('tcp://122.117.135.215');
+var client = mqtt.connect('tcp://core.icp-si.com');
 
 client.on('connect', function () {
-    console.log('connected to WISE server');
+    console.log('Connected to MQTT Server.');
 });
-var sio = io.listen(10000);
-sio.sockets.on('connection', function (socket) {
+var socket = io.listen(10000);
+socket.sockets.on('connection', function (socket) {
+    console.log('Socket Client Connected.');
     socket.on('WCLight', function (data) {
-        console.log(data);
         if(data == 'ON'){
             client.publish('hok/402/light/wc', 'ON');
         }else{

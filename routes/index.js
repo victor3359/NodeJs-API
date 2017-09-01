@@ -17,16 +17,15 @@ function update() {
 */
 router.get('/', function (req, res, next) {
     res.render('index', {
+        title: 'Hok Room 402',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm402', function (req, res, next) {
+    res.render('rm402', {
         title: 'Hok House',
         chart: 'chartdiv'
     });
 });
-router.get('/rm401', function (req, res, next) {
-    res.render('rm401', {
-        title: 'Hok House',
-        chart: 'chartdiv'
-    });
-});
-
 
 module.exports = router;
