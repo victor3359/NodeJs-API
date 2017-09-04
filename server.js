@@ -5,7 +5,7 @@ var cors = require('cors');
 //var mongoose = require('mongoose');
 var mongodb = require('mongodb').MongoClient;
 
-var url = "mongodb://192.168.100.181:27017/hok";
+var url = "mongodb://core.icp-si.com:10807/hok";
 
 app.use(cors());
 var route = express.Router();
@@ -47,7 +47,7 @@ route.get('/r402a', function(req, res){
 route.get('/r401a', function(req, res){
     mongodb.connect(url, function (err, db) {
         if(err)throw err;
-        db.collection('Device_info').find({Room_num: '401'}).sort({_id:-1}).limit(2000).toArray(function (mongoError, objects) {
+        db.collection('Device_info').find({Room_num: '401'}).sort({_id:-1}).limit(5000).toArray(function (mongoError, objects) {
             if(mongoError)throw mongoError;
             res.send(objects);
             db.close();
@@ -101,7 +101,7 @@ var opt = {
     username: 'icpsi',
     password: '12345678'
 };
-var client = mqtt.connect('tcp://192.168.100.192', opt);
+var client = mqtt.connect('tcp://core.icp-si.com', opt);
 
 client.on('connect', function () {
     console.log('Connected to MQTT Server.');

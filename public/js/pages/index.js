@@ -4,8 +4,9 @@ $(document).ready(function() {
     var voltagedata = [];
     var amperedata = [];
     var powerdata_c = [];
+    var chartdata = [];
 
-    var socket = io.connect('http://localhost:10000');
+    var socket = io.connect('http://hokhouse.ddns.net:10000');
     //Controller Def Start
     $('#WC_Light_Switch').click(function () {
         if(getText('WC_Light_State') == 'Off'){
@@ -67,7 +68,7 @@ $(document).ready(function() {
         return document.getElementById(name).innerHTML;
     }
     function Initdata() {
-        var url = "http://localhost:8080/r402";
+        var url = "http://hokhouse.ddns.net:8080/r402";
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -108,7 +109,6 @@ $(document).ready(function() {
                 }else{
                     state('BD_Light_State', 0);
                 }
-
                 $("#visitsspark-chart").sparkline(powerdata, {
                     type: 'line',
                     width: '100%',
@@ -144,35 +144,25 @@ $(document).ready(function() {
                 InitPw();
                 Initerr();
                 setInterval(Update, 1000);
+                setInterval(updatechart, 3000);
             }
         };
         xhttp.open("GET", url, true);
         xhttp.send(null);
     }
+
     function InitPw() {
-        var url = "http://localhost:8080/r402a";
+        var url = "http://hokhouse.ddns.net:8080/r402a";
         var xhttp = new XMLHttpRequest();
-        var data = [];
-        var j = 4999;
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var json = JSON.parse(xhttp.responseText);
-                for(var i=0;i<5000;i++){
-                    powerdata_c.push(json[i]['kW_tot'] * 1000);
-                    data.push({
-                        hok402_w: parseFloat(json[j-i]['kW_tot'])*1000,
-                        date: json[j-i]['datetime']
+                for(var i=2000;i >= 0;i--) {
+                    chartdata.push({
+                        hok402_w: parseFloat(json[i]['kW_tot'])*1000,
+                        date: json[i]['datetime']
                     });
                 }
-                $("#rating").sparkline(powerdata_c, {
-                    type: 'line',
-                    width: "100%",
-                    height: '48',
-                    spotColor: '#FF00FF',
-                    lineColor: '#DF0F7C',
-                    tooltipSuffix: ' W'
-                });
-
                 AmCharts.makeChart("chartdiv",
                     {
                         "type": "serial",
@@ -218,7 +208,7 @@ $(document).ready(function() {
                                 "text": ""
                             }
                         ],
-                        "dataProvider": data
+                        "dataProvider": chartdata
                     }
                 );
             }
@@ -226,8 +216,9 @@ $(document).ready(function() {
         xhttp.open("GET", url, true);
         xhttp.send(null);
     }
+
     function Initerr() {
-        var url = "http://localhost:8080/err_count";
+        var url = "http://hokhouse.ddns.net:8080/err_count";
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -241,16 +232,21 @@ $(document).ready(function() {
     Initdata();
 
     function Update() {
-        var url = "http://localhost:8080/r402";
+        var url = "http://hokhouse.ddns.net:8080/r402";
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var json = JSON.parse(xhttp.responseText);
 
+
                 powerdata.push(json[0]['kWh_tot']);
                 voltagedata.push(json[0]['V_avg']);
                 amperedata.push(json[0]['I_avg'] * 1000);
                 powerdata_c.push(json[0]['kW_tot'] * 1000);
+                chartdata.push({
+                    hok402_w: parseFloat(json[0]['kW_tot'])*1000,
+                    date: json[0]['datetime']
+                });
 
                 setText("widget_countup1", parseInt(json[0]['kWh_tot']));
                 setText("widget_countup12", json[0]['kWh_tot']);
@@ -285,7 +281,8 @@ $(document).ready(function() {
                 if (powerdata.length > 10) powerdata.shift();
                 if (voltagedata.length > 10) voltagedata.shift();
                 if (amperedata.length > 10) amperedata.shift();
-                if (powerdata_c.length > 5000) powerdata_c.shift();
+                if (powerdata_c.length > 10) powerdata_c.shift();
+                chartdata.shift();
 
                 $("#visitsspark-chart").sparkline(powerdata, {
                     type: 'line',
@@ -325,6 +322,56 @@ $(document).ready(function() {
         xhttp.send(null);
     }
 
+    function updatechart() {
+        AmCharts.makeChart("chartdiv",
+            {
+                "type": "serial",
+                "categoryField": "date",
+                "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
+                "categoryAxis": {
+                    "minPeriod": "ss",
+                    "parseDates": true
+                },
+                "chartCursor": {
+                    "enabled": true,
+                    "categoryBalloonDateFormat": "JJ:NN:SS"
+                },
+                "chartScrollbar": {
+                    "enabled": true
+                },
+                "trendLines": [],
+                "graphs": [
+                    {
+                        "bullet": "round",
+                        "id": "AmGraph-1",
+                        "title": "W",
+                        "valueField": "hok402_w"
+                    }
+                ],
+                "guides": [],
+                "valueAxes": [
+                    {
+                        "id": "ValueAxis-1",
+                        "title": "Power"
+                    }
+                ],
+                "allLabels": [],
+                "balloon": {},
+                "legend": {
+                    "enabled": true,
+                    "useGraphSettings": true
+                },
+                "titles": [
+                    {
+                        "id": "Hok_402",
+                        "size": 15,
+                        "text": ""
+                    }
+                ],
+                "dataProvider": chartdata
+            }
+        );
+    }
 
 //   flip js
 
