@@ -1,3 +1,233 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<!doctype html>
+<html class="no-js" lang="en">
+
+
+<!-- Mirrored from demo.lorvent.com/demo_admire/admire_html/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 01 Sep 2017 07:00:22 GMT -->
+<head>
+    <meta charset="UTF-8">
+    <title>Ho̍k House</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="img_new/hok_house_nb.png"/>
+
+    <!--global styles-->
+    <link type="text/css" rel="stylesheet" href="css_new/stylesheet_table.css"/>
+    <link type="text/css" rel="stylesheet" href="css_new/stylesheet_buttons.css">
+    <link type="text/css" rel="stylesheet" href="css_new/stylesheet_index.css">
+    <!-- end of global styles-->
+
+    <link type="text/css" rel="stylesheet" href="#" id="skin_change"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+
+</head>
+
+<body class="body">
+<div class="preloader" style=" position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100000;
+  backface-visibility: hidden;
+  background: #ffffff;">
+    <div class="preloader_img" style="width: 200px;
+  height: 200px;
+  position: absolute;
+  left: 48%;
+  top: 48%;
+  background-position: center;
+z-index: 999999">
+        <img src="img/loader.gif.pagespeed.ce.6uBJi4bcCR.gif" style=" width: 40px;" alt="loading...">
+    </div>
+</div>
+<div class="bg-dark" id="wrap">
+    <div id="top">
+        <!-- .navbar -->
+        <nav class="navbar navbar-static-top">
+            <div class="container-fluid m-0">
+                <a class="navbar-brand float-left text-center" href="rm402">
+                    <h4 class="text-white"><img src="img_new/hok_house_nb.png" class="admin_img" alt="logo"> Ho̍k House</h4>
+                </a>
+                <div class="menu">
+                    <span class="toggle-left" id="menu-toggle">
+                        <i class="fa fa-bars text-white"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- /.container-fluid --> </nav>
+        <!-- /.navbar -->
+        <!-- /.head --> </div>
+    <!-- /#top -->
+    <div class="wrapper">
+        <div id="left">
+            <div class="media user-media bg-dark dker">
+                <div class="user-media-toggleHover">
+                    <span class="fa fa-user"></span>
+                </div>
+                <div class="user-wrapper bg-dark">
+                    <a class="user-link" href="#">
+                        <img class="media-object img-thumbnail user-img rounded-circle admin_img3" alt="User Picture"
+                             src="img_new/Hok_house_nato.jpg">
+                        <h4 class="text-white user-info">Ho̍k House</h4>
+                    </a>
+                </div>
+            </div>
+            <!-- #menu -->
+            <ul id="menu" class="bg-blue dker">
+                <li class="dropdown_menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-home"></i>
+                        <span class="link-title menu_hide">&nbsp; Ho̍k Rooms</span>
+                        <span class="fa arrow menu_hide"></span>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="rm402">
+                                <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 402
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown_menu active">
+                    <a href="javascript:;">
+                        <i class="fa fa-warning"></i>
+                        <span class="link-title menu_hide">&nbsp; Warnings</span>
+                        <span class="fa arrow menu_hide"></span>
+                    </a>
+                    <ul>
+                        <li class="active">
+                            <a href="error">
+                                <i class="fa fa-angle-right"></i> &nbsp; Error
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- /#menu -->
+        </div>
+        <!-- /#left -->
+        <div id="content" class="bg-container">
+            <header class="head">
+                <div class="main-bar">
+                    <div class="row">
+                        <div class="col-6">
+                            <h4 class="m-t-5">
+                                <i class="fa fa-home"></i>
+                                Room 402
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div class="outer">
+                <div class="inner bg-container">
+                    <div class="card m-t-35">
+                        <div class="card-header bg-white">
+                            <i class="fa fa-table"> Ho̍k Errors</i>
+                        </div>
+                        <div class="card-block">
+                            <div class="m-t-35">
+                                <button id="del_button" class="btn btn-primary"> Delete Selected Row </button>
+                                <div class="m-t-25">
+                                    <table id="example_demo" class="table table-hover table-bordered ">
+                                        <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th class="hidden-xs">DateTime</th>
+                                            <th class="hidden-xs">Message</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- # right side -->
+</div>
+<!-- /#wrap -->
+<!-- global scripts-->
+<script type="text/javascript" src="js/components.js"></script>
+<script type="text/javascript" src="js/custom.js"></script>
+<!--end of global scripts-->
+<!--  plugin scripts -->
+<script type="text/javascript" src="vendors/countUp.js/js/countUp.min.js"></script>
+<script type="text/javascript" src="vendors/flip/js/jquery.flip.min.js"></script>
+<script type="text/javascript" src="js/pluginjs/jquery.sparkline.js"></script>
+<script type="text/javascript" src="vendors/chartist/js/chartist.min.js"></script>
+<script type="text/javascript" src="js/pluginjs/chartist-tooltip.js"></script>
+<script type="text/javascript" src="vendors/swiper/js/swiper.min.js"></script>
+<script type="text/javascript" src="vendors/circliful/js/jquery.circliful.min.js"></script>
+<script type="text/javascript" src="vendors/flotchart/js/jquery.flot.js"></script>
+<script type="text/javascript" src="vendors/flotchart/js/jquery.flot.resize.js"></script>
+<!--end of plugin scripts-->
+
+
+<!-- plugin scripts -->
+<script type="text/javascript" src="vendors/select2/js/select2.js.pagespeed.jm.Eugd1Y0BmV.js"></script>
+<script src="vendors/datatables/js/jquery.dataTables.min.js%2bdataTables.bootstrap.min.js.pagespeed.jc.3hPp-oKyFV.js"></script><script>eval(mod_pagespeed_ohALzKQc7L);</script>
+<script>eval(mod_pagespeed_IXQJQeia87);</script>
+<!-- end plugin scripts -->
+<!--Page level scripts-->
+<script type="text/javascript">
+    //<![CDATA[
+
+    'use strict';
+    var table=$('#example_demo').DataTable({"dom":"<'row'<'col-md-5 col-sm-12'l><'col-md-7 col-sm-12'f>r><'table-responsive't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>"});
+    var $example_demo=$('#example_demo tbody');
+    $example_demo.on('mouseenter','td',function(){
+        var colIdx=table.cell(this).index().column;
+        $(table.cells().nodes()).removeClass('highlight');
+        $(table.column(colIdx).nodes()).addClass('highlight');
+        return false;
+    });
+    $example_demo.on('mouseleave','td',function(){
+        $(table.cells().nodes()).removeClass('highlight');
+        return false;
+    });
+    $example_demo.on('click','tr',function(){
+        $(this).toggleClass('selected');$('#del_button').on('click',function(){
+            table.row('#example_demo tbody .selected').remove().draw(false);
+            return false;
+        });
+        return false;
+    });
+    $(".dataTables_wrapper").removeClass("form-inline");$(".dataTables_paginate .pagination").addClass("float-right");
+
+    $(document).ready(function () {
+        var data = [];
+        function Initdata() {
+            var url = "http://localhost:8080/err";
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var json = JSON.parse(xhttp.responseText);
+                    for(var i=json.length - 1;i>=0;i--){
+                        data.push([json[i]['error_type'], json[i]['datetime'], json[i]['error_info']]);
+                    }
+                    for(var i=0;i<data.length;i++){
+                        table.row.add(data[i]).draw(false);
+                    }
+                }
+            };
+            xhttp.open("GET", url, true);
+            xhttp.send(null);
+        }
+        Initdata();
+    });
+
+    //]]>
+</script>
+<!-- end of global scripts-->
+</body>
+
+<!-- Mirrored from demo.lorvent.com/demo_admire/admire_html/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 01 Sep 2017 07:01:26 GMT -->
+</html>

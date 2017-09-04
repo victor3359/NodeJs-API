@@ -65,6 +65,27 @@ route.get('/r401', function(req, res){
     });
 });
 
+route.get('/err', function(req, res){
+    mongodb.connect(url, function (err, db) {
+        if(err)throw err;
+        db.collection('ErrorEven_log').find().toArray(function (mongoError, objects) {
+            if(mongoError)throw mongoError;
+            res.send(objects);
+            db.close();
+        });
+    });
+});
+
+route.get('/err_count', function(req, res){
+    mongodb.connect(url, function (err, db) {
+        if(err)throw err;
+        db.collection('ErrorEven_log').find().toArray(function (mongoError, objects) {
+            if(mongoError)throw mongoError;
+            res.send(objects.length.toString());
+            db.close();
+        });
+    });
+});
 
 app.use('/', route);
 //Start the server
@@ -76,9 +97,11 @@ var io = require('socket.io');
 var mqtt = require('mqtt');
 var opt = {
     port: 1883,
-    clientId: 'nodejs'
+    clientId: 'nodejs',
+    username: 'icpsi',
+    password: '12345678'
 };
-var client = mqtt.connect('tcp://core.icp-si.com');
+var client = mqtt.connect('tcp://192.168.100.192', opt);
 
 client.on('connect', function () {
     console.log('Connected to MQTT Server.');
@@ -92,6 +115,7 @@ socket.sockets.on('connection', function (socket) {
         }else{
             client.publish('hok/402/light/wc', 'OFF');
         }
+        console.log(data);
     });
     socket.on('WDLight', function (data) {
         if(data == 'ON'){
@@ -99,6 +123,7 @@ socket.sockets.on('connection', function (socket) {
         }else{
             client.publish('hok/402/light/window', 'OFF');
         }
+        console.log(data);
     });
     socket.on('RMLight', function (data) {
         if(data == 'ON'){
@@ -106,6 +131,7 @@ socket.sockets.on('connection', function (socket) {
         }else{
             client.publish('hok/402/light/guest', 'OFF');
         }
+        console.log(data);
     });
     socket.on('BDLeftLight', function (data) {
         if(data == 'ON'){
@@ -113,12 +139,14 @@ socket.sockets.on('connection', function (socket) {
         }else{
             client.publish('hok/402/light/bed_left', 'OFF');
         }
+        console.log(data);
     });
-    socket.on('BDLeftLight', function (data) {
+    socket.on('BDRightLight', function (data) {
         if(data == 'ON'){
             client.publish('hok/402/light/bed_right', 'ON');
         }else{
             client.publish('hok/402/light/bed_right', 'OFF');
         }
+        console.log(data);
     });
 });

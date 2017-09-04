@@ -27,5 +27,11 @@ router.get('/rm402', function (req, res, next) {
         chart: 'chartdiv'
     });
 });
+router.get('/error', function (req, res, next) {
+    res.render('error', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
 
 module.exports = router;

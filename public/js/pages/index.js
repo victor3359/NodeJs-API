@@ -5,6 +5,54 @@ $(document).ready(function() {
     var amperedata = [];
     var powerdata_c = [];
 
+    var socket = io.connect('http://localhost:10000');
+    //Controller Def Start
+    $('#WC_Light_Switch').click(function () {
+        if(getText('WC_Light_State') == 'Off'){
+            socket.emit('WCLight', 'ON');
+        }else{
+            socket.emit('WCLight', 'OFF');
+        }
+    });
+    $('#WD_Light_Switch').click(function () {
+        if(getText('WD_Light_State') == 'Off'){
+            socket.emit('WDLight', 'ON');
+        }else{
+            socket.emit('WDLight', 'OFF');
+        }
+    });
+    $('#RM_Light_Switch').click(function () {
+        if(getText('RM_Light_State') == 'Off'){
+            socket.emit('RMLight', 'ON');
+        }else{
+            socket.emit('RMLight', 'OFF');
+        }
+    });
+    $('#BD_Light_Switch').click(function () {
+        if(getText('BD_Light_State') == 'Off'){
+            socket.emit('BDLeftLight', 'ON');
+            socket.emit('BDRightLight', 'ON');
+        }else{
+            socket.emit('BDLeftLight', 'OFF');
+            socket.emit('BDRightLight', 'OFF');
+        }
+    });
+    $('#All_On').click(function () {
+        socket.emit('WCLight', 'ON');
+        socket.emit('WDLight', 'ON');
+        socket.emit('RMLight', 'ON');
+        socket.emit('BDLeftLight', 'ON');
+        socket.emit('BDRightLight', 'ON');
+    });
+    $('#All_Off').click(function () {
+        socket.emit('WCLight', 'OFF');
+        socket.emit('WDLight', 'OFF');
+        socket.emit('RMLight', 'OFF');
+        socket.emit('BDLeftLight', 'OFF');
+        socket.emit('BDRightLight', 'OFF');
+    });
+    //Controller Def End
+
     function state(name, flag){
         if(flag) {
             document.getElementById(name).innerHTML = 'On';
@@ -15,8 +63,11 @@ $(document).ready(function() {
     function setText(name, value) {
         document.getElementById(name).innerHTML = value;
     }
+    function getText(name) {
+        return document.getElementById(name).innerHTML;
+    }
     function Initdata() {
-        var url = "http://192.168.100.34:8080/r402";
+        var url = "http://localhost:8080/r402";
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -24,18 +75,39 @@ $(document).ready(function() {
 
                 powerdata.push(json[0]['kWh_tot']);
                 voltagedata.push(json[0]['V_avg']);
-                amperedata.push(json[0]['I_avg']);
-                powerdata_c.push(json[0]['kW_tot']);
+                amperedata.push(json[0]['I_avg'] * 1000);
+                powerdata_c.push(json[0]['kW_tot'] * 1000);
 
                 new CountUp("widget_countup1", 0,json[0]['kWh_tot'] , 0, 5.0, options).start();
                 new CountUp("widget_countup2", 0,json[0]['V_avg'] , 0, 5.0, options).start();
-                new CountUp("widget_countup3", 0,json[0]['I_avg'] , 0, 5.0, options).start();
+                new CountUp("widget_countup3", 0,json[0]['I_avg']  * 1000, 0, 5.0, options).start();
                 new CountUp("widget_countup4", 0,json[0]['kW_tot'] * 1000 , 0, 5.0, options).start();
 
                 setText("widget_countup12", json[0]['kWh_tot']);
                 setText("widget_countup22", json[0]['V_avg']);
-                setText("widget_countup32", json[0]['I_avg']);
+                setText("widget_countup32", json[0]['I_avg'] * 1000);
                 setText("widget_countup42", json[0]['kW_tot'] * 1000);
+
+                if(json[0]['wc_light_status']){
+                    state('WC_Light_State', 1);
+                }else{
+                    state('WC_Light_State', 0);
+                }
+                if(json[0]['windows_light_status']){
+                    state('WD_Light_State', 1);
+                }else{
+                    state('WD_Light_State', 0);
+                }
+                if(json[0]['Room_lights_C1'] || json[0]['Room_lights_C2'] || json[0]['Room_light_C3']){
+                    state('RM_Light_State', 1);
+                }else{
+                    state('RM_Light_State', 0);
+                }
+                if(json[0]['BedLeft_lights_C1'] || json[0]['BedRight_lights_C2']){
+                    state('BD_Light_State', 1);
+                }else{
+                    state('BD_Light_State', 0);
+                }
 
                 $("#visitsspark-chart").sparkline(powerdata, {
                     type: 'line',
@@ -51,15 +123,15 @@ $(document).ready(function() {
                     height: '48',
                     spotColor: '#f0ad4e',
                     lineColor: '#EF6F6C',
-                    tooltipSuffix: ' Voltage'
+                    tooltipSuffix: ' V'
                 });
                 $('#mousespeed').sparkline(amperedata, {
                     type: 'line',
-                    height: "48px",
+                    height: "48",
                     width: "100%",
                     lineColor: '#0cd32d',
                     fillColor: '#27c5f0',
-                    tooltipSuffix: ' Ampere'
+                    tooltipSuffix: ' mA'
                 });
                 $("#rating").sparkline(powerdata_c, {
                     type: 'line',
@@ -67,19 +139,109 @@ $(document).ready(function() {
                     height: '48',
                     spotColor: '#FF00FF',
                     lineColor: '#DF0F7C',
-                    tooltipSuffix: ' Watt'
+                    tooltipSuffix: ' W'
                 });
+                InitPw();
+                Initerr();
                 setInterval(Update, 1000);
             }
         };
         xhttp.open("GET", url, true);
         xhttp.send(null);
     }
+    function InitPw() {
+        var url = "http://localhost:8080/r402a";
+        var xhttp = new XMLHttpRequest();
+        var data = [];
+        var j = 4999;
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var json = JSON.parse(xhttp.responseText);
+                for(var i=0;i<5000;i++){
+                    powerdata_c.push(json[i]['kW_tot'] * 1000);
+                    data.push({
+                        hok402_w: parseFloat(json[j-i]['kW_tot'])*1000,
+                        date: json[j-i]['datetime']
+                    });
+                }
+                $("#rating").sparkline(powerdata_c, {
+                    type: 'line',
+                    width: "100%",
+                    height: '48',
+                    spotColor: '#FF00FF',
+                    lineColor: '#DF0F7C',
+                    tooltipSuffix: ' W'
+                });
 
+                AmCharts.makeChart("chartdiv",
+                    {
+                        "type": "serial",
+                        "categoryField": "date",
+                        "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
+                        "categoryAxis": {
+                            "minPeriod": "ss",
+                            "parseDates": true
+                        },
+                        "chartCursor": {
+                            "enabled": true,
+                            "categoryBalloonDateFormat": "JJ:NN:SS"
+                        },
+                        "chartScrollbar": {
+                            "enabled": true
+                        },
+                        "trendLines": [],
+                        "graphs": [
+                            {
+                                "bullet": "round",
+                                "id": "AmGraph-1",
+                                "title": "W",
+                                "valueField": "hok402_w"
+                            }
+                        ],
+                        "guides": [],
+                        "valueAxes": [
+                            {
+                                "id": "ValueAxis-1",
+                                "title": "Power"
+                            }
+                        ],
+                        "allLabels": [],
+                        "balloon": {},
+                        "legend": {
+                            "enabled": true,
+                            "useGraphSettings": true
+                        },
+                        "titles": [
+                            {
+                                "id": "Hok_402",
+                                "size": 15,
+                                "text": ""
+                            }
+                        ],
+                        "dataProvider": data
+                    }
+                );
+            }
+        };
+        xhttp.open("GET", url, true);
+        xhttp.send(null);
+    }
+    function Initerr() {
+        var url = "http://localhost:8080/err_count";
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var json = JSON.parse(xhttp.responseText);
+                setText('warning_count', json);
+            }
+        };
+        xhttp.open("GET", url, true);
+        xhttp.send(null);
+    }
     Initdata();
 
     function Update() {
-        var url = "http://192.168.100.34:8080/r402";
+        var url = "http://localhost:8080/r402";
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -87,22 +249,43 @@ $(document).ready(function() {
 
                 powerdata.push(json[0]['kWh_tot']);
                 voltagedata.push(json[0]['V_avg']);
-                amperedata.push(json[0]['I_avg']);
-                powerdata_c.push(json[0]['kW_tot']);
+                amperedata.push(json[0]['I_avg'] * 1000);
+                powerdata_c.push(json[0]['kW_tot'] * 1000);
 
                 setText("widget_countup1", parseInt(json[0]['kWh_tot']));
                 setText("widget_countup12", json[0]['kWh_tot']);
                 setText("widget_countup2", parseInt(json[0]['V_avg']));
                 setText("widget_countup22", json[0]['V_avg']);
-                setText("widget_countup3", parseInt(json[0]['I_avg']));
-                setText("widget_countup32", json[0]['I_avg']);
+                setText("widget_countup3", json[0]['I_avg'] * 1000);
+                setText("widget_countup32", json[0]['I_avg'] * 1000);
                 setText("widget_countup4", json[0]['kW_tot'] * 1000);
                 setText("widget_countup42", json[0]['kW_tot'] * 1000);
+
+                if(json[0]['wc_light_status']){
+                    state('WC_Light_State', 1);
+                }else{
+                    state('WC_Light_State', 0);
+                }
+                if(json[0]['windows_light_status']){
+                    state('WD_Light_State', 1);
+                }else{
+                    state('WD_Light_State', 0);
+                }
+                if(json[0]['Room_lights_C1'] || json[0]['Room_lights_C2'] || json[0]['Room_light_C3']){
+                    state('RM_Light_State', 1);
+                }else{
+                    state('RM_Light_State', 0);
+                }
+                if(json[0]['BedLeft_lights_C1'] || json[0]['BedRight_lights_C2']){
+                    state('BD_Light_State', 1);
+                }else{
+                    state('BD_Light_State', 0);
+                }
 
                 if (powerdata.length > 10) powerdata.shift();
                 if (voltagedata.length > 10) voltagedata.shift();
                 if (amperedata.length > 10) amperedata.shift();
-                if (powerdata_c.length > 10) powerdata_c.shift();
+                if (powerdata_c.length > 5000) powerdata_c.shift();
 
                 $("#visitsspark-chart").sparkline(powerdata, {
                     type: 'line',
@@ -118,15 +301,15 @@ $(document).ready(function() {
                     height: '48',
                     spotColor: '#f0ad4e',
                     lineColor: '#EF6F6C',
-                    tooltipSuffix: ' Voltage'
+                    tooltipSuffix: ' V'
                 });
                 $('#mousespeed').sparkline(amperedata, {
                     type: 'line',
-                    height: "48px",
+                    height: "48",
                     width: "100%",
                     lineColor: '#4fb7fe',
                     fillColor: '#e7f5ff',
-                    tooltipSuffix: ' Ampere'
+                    tooltipSuffix: ' mA'
                 });
                 $("#rating").sparkline(powerdata_c, {
                     type: 'line',
@@ -134,7 +317,7 @@ $(document).ready(function() {
                     height: '48',
                     spotColor: '#FF00FF',
                     lineColor: '#DF0F7C',
-                    tooltipSuffix: ' Watt'
+                    tooltipSuffix: ' W'
                 });
             }
         };
@@ -142,14 +325,6 @@ $(document).ready(function() {
         xhttp.send(null);
     }
 
-
-    function spark_sales1() {
-        var barParentdiv = $('#rating').closest('div');
-        var barCount = [1, 2, 3, 2, 5, 3, 5, 6, 5, 6, 5, 7, 8, 8, 6, 7, 4, 3, 5, 4, 2, 3, 5, 3, 2, 1];
-        var barSpacing = 2;
-    }
-
-    spark_sales1();
 
 //   flip js
 
@@ -255,8 +430,6 @@ $(document).ready(function() {
             });
         }
     });
-
-
 //===============================coding docs desingi=====================================
 
     $('#myStat').circliful({

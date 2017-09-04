@@ -451,10 +451,10 @@
                 setText("avg_v", json[0]['V_avg']);
                 setText("avg_i", json[0]['I_avg']);
                 setText("rm_c1", (json[0]['Room_lights_C1'] / 3000) * 100+ " %");
-                setText("rm_c2", (json[0]['Room_lights_C1'] / 3000) * 100+ " %");
-                setText("rm_c3", (json[0]['Room_lights_C1'] / 3000) * 100+ " %");
+                setText("rm_c2", (json[0]['Room_lights_C2'] / 3000) * 100+ " %");
+                setText("rm_c3", (json[0]['Room_lights_C3'] / 3000) * 100+ " %");
                 setText("bd_c1", (json[0]['BedLeft_lights_C1'] / 3000) * 100+ " %");
-                setText("bd_c2", (json[0]['BedRight_lights_C1'] / 3000) * 100+ " %");
+                setText("bd_c2", (json[0]['BedRight_lights_C2'] / 3000) * 100+ " %");
 
                 data.push({
                     hok402_w: parseFloat(json[0]['kW_tot']) * 1000,
