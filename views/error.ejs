@@ -12,6 +12,7 @@
 
     <!--global styles-->
     <link type="text/css" rel="stylesheet" href="css_new/stylesheet_table.css"/>
+    <link type="text/css" rel="stylesheet" href="css_new/stylesheet_p_notify.css"/>
     <link type="text/css" rel="stylesheet" href="css_new/stylesheet_buttons.css">
     <link type="text/css" rel="stylesheet" href="css_new/stylesheet_index.css">
     <!-- end of global styles-->
@@ -176,6 +177,18 @@ z-index: 999999">
 <script src="vendors/datatables/js/jquery.dataTables.min.js%2bdataTables.bootstrap.min.js.pagespeed.jc.3hPp-oKyFV.js"></script><script>eval(mod_pagespeed_ohALzKQc7L);</script>
 <script>eval(mod_pagespeed_IXQJQeia87);</script>
 <!-- end plugin scripts -->
+<script src="vendors/javascript_p_notify.js"></script>
+<script>eval(mod_pagespeed_PgBWTwAB3I);</script>
+<script>eval(mod_pagespeed_37O3ld5zoQ);</script>
+<script>eval(mod_pagespeed_ZzmY5mTsAs);</script>
+<script>eval(mod_pagespeed_jVUCZO33_F);</script>
+<script>eval(mod_pagespeed_IZ2qoLVjJy);</script>
+<script>eval(mod_pagespeed_5QWOUcvZEj);</script>
+<script>eval(mod_pagespeed_vHxvsCIMRH);</script>
+<script>eval(mod_pagespeed_BityH3aJ10);</script>
+<script>eval(mod_pagespeed_WX_WC_ZJ7M);</script>
+<script>eval(mod_pagespeed_0hM1ZEEq1u);</script>
+<script type="text/javascript" src="js/pages/p_notify.js.pagespeed.jm.E2cU5JtMgK.js"></script>
 <!--Page level scripts-->
 <script type="text/javascript">
     //<![CDATA[
@@ -203,25 +216,40 @@ z-index: 999999">
     $(".dataTables_wrapper").removeClass("form-inline");$(".dataTables_paginate .pagination").addClass("float-right");
 
     $(document).ready(function () {
-        var data = [];
-        function Initdata() {
-            var url = "http://localhost:8080/err";
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var json = JSON.parse(xhttp.responseText);
-                    for(var i=json.length - 1;i>=0;i--){
-                        data.push([json[i]['error_type'], json[i]['datetime'], json[i]['error_info']]);
+        var tabledata = [];
+        var socket = io.connect('http://192.168.100.34:10000');
+        socket.emit('done', 0);
+
+
+        function ShowNotify(title, message, datetime){
+            new PNotify({
+                title: title,
+                text: message + '<br>' + datetime,
+                type:'error',
+                after_init:
+                    function(notice){
+                        notice.attention('rubberBand');
                     }
-                    for(var i=0;i<data.length;i++){
-                        table.row.add(data[i]).draw(false);
-                    }
-                }
-            };
-            xhttp.open("GET", url, true);
-            xhttp.send(null);
+            });
         }
-        Initdata();
+
+        socket.on('error_info_page', function (data) {
+            for(var i=data.length - 1;i>=0;i--){
+                tabledata.push([data[i]['error_type'], data[i]['datetime'], data[i]['error_info']]);
+            }
+            for(var i=0;i<data.length;i++){
+                table.row.add(tabledata[i]).draw(false);
+            }
+        });
+        socket.on('error_info', function (data) {
+            for(var i=data.length - 1;i>=0;i--){
+                tabledata.push([data[i]['error_type'], data[i]['datetime'], data[i]['error_info']]);
+            }
+            for(var i=0;i<data.length;i++){
+                ShowNotify(data[i]['error_type'], data[i]['error_info'], data[i]['datetime']);
+                table.row.add(tabledata[i]).draw(false);
+            }
+        });
     });
 
     //]]>

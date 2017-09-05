@@ -1,40 +1,56 @@
 "use strict";
 $(document).ready(function() {
+
     var powerdata = [];
     var voltagedata = [];
     var amperedata = [];
     var powerdata_c = [];
+    var chartdata = [];
 
-    var socket = io.connect('http://localhost:10000');
+    function controlalert(name, cmd){
+        iziToast.show({title:'Success',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
+    }
+
+    var socket = io.connect('http://192.168.100.34:10000');
+
+    socket.emit('done', 0);
     //Controller Def Start
     $('#WC_Light_Switch').click(function () {
         if(getText('WC_Light_State') == 'Off'){
             socket.emit('WCLight', 'ON');
+            controlalert('W.C. Light', 'ON');
         }else{
             socket.emit('WCLight', 'OFF');
+            controlalert('W.C. Light', 'OFF');
         }
     });
     $('#WD_Light_Switch').click(function () {
         if(getText('WD_Light_State') == 'Off'){
             socket.emit('WDLight', 'ON');
+            controlalert('Window Light', 'ON');
         }else{
             socket.emit('WDLight', 'OFF');
+            controlalert('Window Light', 'OFF');
         }
     });
     $('#RM_Light_Switch').click(function () {
         if(getText('RM_Light_State') == 'Off'){
             socket.emit('RMLight', 'ON');
+            controlalert('Room Lights', 'ON');
         }else{
             socket.emit('RMLight', 'OFF');
+            controlalert('Room Lights', 'OFF');
         }
     });
     $('#BD_Light_Switch').click(function () {
         if(getText('BD_Light_State') == 'Off'){
             socket.emit('BDLeftLight', 'ON');
             socket.emit('BDRightLight', 'ON');
+            controlalert('Bed Lights', 'ON');
         }else{
             socket.emit('BDLeftLight', 'OFF');
             socket.emit('BDRightLight', 'OFF');
+            controlalert('Bed Lights', 'OFF');
         }
     });
     $('#All_On').click(function () {
@@ -43,6 +59,7 @@ $(document).ready(function() {
         socket.emit('RMLight', 'ON');
         socket.emit('BDLeftLight', 'ON');
         socket.emit('BDRightLight', 'ON');
+        controlalert('Lights', 'ON All');
     });
     $('#All_Off').click(function () {
         socket.emit('WCLight', 'OFF');
@@ -50,9 +67,10 @@ $(document).ready(function() {
         socket.emit('RMLight', 'OFF');
         socket.emit('BDLeftLight', 'OFF');
         socket.emit('BDRightLight', 'OFF');
+        controlalert('Lights', 'OFF All');
     });
-    //Controller Def End
 
+    //Controller Def End
     function state(name, flag){
         if(flag) {
             document.getElementById(name).innerHTML = 'On';
@@ -60,223 +78,363 @@ $(document).ready(function() {
             document.getElementById(name).innerHTML = 'Off';
         }
     }
+
+
     function setText(name, value) {
         document.getElementById(name).innerHTML = value;
     }
+
     function getText(name) {
         return document.getElementById(name).innerHTML;
     }
-    function Initdata() {
-        var url = "http://localhost:8080/r402";
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var json = JSON.parse(xhttp.responseText);
 
-                powerdata.push(json[0]['kWh_tot']);
-                voltagedata.push(json[0]['V_avg']);
-                amperedata.push(json[0]['I_avg'] * 1000);
-                powerdata_c.push(json[0]['kW_tot'] * 1000);
-
-                new CountUp("widget_countup1", 0,json[0]['kWh_tot'] , 0, 5.0, options).start();
-                new CountUp("widget_countup2", 0,json[0]['V_avg'] , 0, 5.0, options).start();
-                new CountUp("widget_countup3", 0,json[0]['I_avg']  * 1000, 0, 5.0, options).start();
-                new CountUp("widget_countup4", 0,json[0]['kW_tot'] * 1000 , 0, 5.0, options).start();
-
-                setText("widget_countup12", json[0]['kWh_tot']);
-                setText("widget_countup22", json[0]['V_avg']);
-                setText("widget_countup32", json[0]['I_avg'] * 1000);
-                setText("widget_countup42", json[0]['kW_tot'] * 1000);
-
-                if(json[0]['wc_light_status']){
-                    state('WC_Light_State', 1);
-                }else{
-                    state('WC_Light_State', 0);
+    function ShowNotify(title, message, datetime){
+        new PNotify({
+            title: title,
+            text: message + '<br>' + datetime,
+            type:'error',
+            after_init:
+                function(notice){
+                    notice.attention('rubberBand');
                 }
-                if(json[0]['windows_light_status']){
-                    state('WD_Light_State', 1);
-                }else{
-                    state('WD_Light_State', 0);
-                }
-                if(json[0]['Room_lights_C1'] || json[0]['Room_lights_C2'] || json[0]['Room_light_C3']){
-                    state('RM_Light_State', 1);
-                }else{
-                    state('RM_Light_State', 0);
-                }
-                if(json[0]['BedLeft_lights_C1'] || json[0]['BedRight_lights_C2']){
-                    state('BD_Light_State', 1);
-                }else{
-                    state('BD_Light_State', 0);
-                }
-
-                $("#visitsspark-chart").sparkline(powerdata, {
-                    type: 'line',
-                    width: '100%',
-                    height: '48',
-                    lineColor: '#4fb7fe',
-                    fillColor: '#e7f5ff',
-                    tooltipSuffix: ' kWh'
-                });
-                $('#salesspark-chart').sparkline(voltagedata,{
-                    type: 'line',
-                    width: "100%",
-                    height: '48',
-                    spotColor: '#f0ad4e',
-                    lineColor: '#EF6F6C',
-                    tooltipSuffix: ' V'
-                });
-                $('#mousespeed').sparkline(amperedata, {
-                    type: 'line',
-                    height: "48",
-                    width: "100%",
-                    lineColor: '#0cd32d',
-                    fillColor: '#27c5f0',
-                    tooltipSuffix: ' mA'
-                });
-                $("#rating").sparkline(powerdata_c, {
-                    type: 'line',
-                    width: "100%",
-                    height: '48',
-                    spotColor: '#FF00FF',
-                    lineColor: '#DF0F7C',
-                    tooltipSuffix: ' W'
-                });
-                InitPw();
-                Initerr();
-                setInterval(Update, 1000);
-            }
-        };
-        xhttp.open("GET", url, true);
-        xhttp.send(null);
+        });
     }
-    function InitPw() {
-        var url = "http://localhost:8080/r402a";
-        var xhttp = new XMLHttpRequest();
-        var data = [];
-        var j = 4999;
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var json = JSON.parse(xhttp.responseText);
-                for(var i=0;i<5000;i++){
-                    powerdata_c.push(json[i]['kW_tot'] * 1000);
-                    data.push({
-                        hok402_w: parseFloat(json[j-i]['kW_tot'])*1000,
-                        date: json[j-i]['datetime']
-                    });
-                }
-                $("#rating").sparkline(powerdata_c, {
-                    type: 'line',
-                    width: "100%",
-                    height: '48',
-                    spotColor: '#FF00FF',
-                    lineColor: '#DF0F7C',
-                    tooltipSuffix: ' W'
-                });
 
-                AmCharts.makeChart("chartdiv",
+    socket.on('error_info', function (data) {
+        for(var i=0;i<data.length;i++){
+            ShowNotify(data[i]['error_type'], data[i]['error_info'], data[i]['datetime']);
+        }
+    });
+
+    socket.on('update_errcount', function (data) {
+        setText('warning_count', data);
+    });
+
+    //Room 402 Socket
+    socket.on('rm402_init', function (data) {
+        powerdata.push(data['kWh']);
+        voltagedata.push(data['AvgV']);
+        amperedata.push(data['AvgI'] * 1000);
+        powerdata_c.push(data['kW'] * 1000);
+
+        new CountUp("widget_countup1", 0,data['kWh'] , 0, 5.0, options).start();
+        new CountUp("widget_countup2", 0,data['AvgV'] , 0, 5.0, options).start();
+        new CountUp("widget_countup3", 0,data['AvgI']  * 1000, 0, 5.0, options).start();
+        new CountUp("widget_countup4", 0,data['kW'] * 1000 , 0, 5.0, options).start();
+
+        setText("widget_countup12", data['kWh']);
+        setText("widget_countup22", data['AvgV']);
+        setText("widget_countup32", data['AvgI'] * 1000);
+        setText("widget_countup42", data['kW'] * 1000);
+
+        if(data['WCL']){
+            state('WC_Light_State', 1);
+        }else{
+            state('WC_Light_State', 0);
+        }
+        if(data['WDL']){
+            state('WD_Light_State', 1);
+        }else{
+            state('WD_Light_State', 0);
+        }
+        if(data['RMC1'] || data['RMC2'] || data['RMC3']){
+            state('RM_Light_State', 1);
+        }else{
+            state('RM_Light_State', 0);
+        }
+        if(data['BDLC1'] || data['BDRC1']){
+            state('BD_Light_State', 1);
+        }else{
+            state('BD_Light_State', 0);
+        }
+        $("#visitsspark-chart").sparkline(powerdata, {
+            type: 'line',
+            width: '100%',
+            height: '48',
+            lineColor: '#4fb7fe',
+            fillColor: '#e7f5ff',
+            tooltipSuffix: ' kWh'
+        });
+        $('#salesspark-chart').sparkline(voltagedata,{
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#f0ad4e',
+            lineColor: '#EF6F6C',
+            tooltipSuffix: ' V'
+        });
+        $('#mousespeed').sparkline(amperedata, {
+            type: 'line',
+            height: "48",
+            width: "100%",
+            lineColor: '#0cd32d',
+            fillColor: '#27c5f0',
+            tooltipSuffix: ' mA'
+        });
+        $("#rating").sparkline(powerdata_c, {
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#FF00FF',
+            lineColor: '#DF0F7C',
+            tooltipSuffix: ' W'
+        });
+    });
+    socket.on('rm402_chart_init', function (data) {
+        for(var i=1999;i >= 0;i--) {
+            chartdata.push({
+                hok_w: parseFloat(data[i]['kW']) * 1000,
+                hok_wc_l: data[i]['WCL'] * 3000,
+                hok_wd_l: data[i]['WDL'] * 3000,
+                hok_rm_c1: data[i]['RMC1'],
+                hok_rm_c2: data[i]['RMC2'],
+                hok_rm_c3: data[i]['RMC3'],
+                hok_bdl_c1: data[i]['BDLC1'],
+                hok_bdr_c2: data[i]['BDRC1'],
+                date: data[i]['TIME']
+            });
+        }
+        updatechartrt();
+    });
+    socket.on('rm402_chart_data', function (data) {
+        for(var i=59;i >= 0;i--) {
+            chartdata.push({
+                hok_w: parseFloat(data[i]['kW']) * 1000,
+                hok_wc_l: data[i]['WCL'] * 3000,
+                hok_wd_l: data[i]['WDL'] * 3000,
+                hok_rm_c1: data[i]['RMC1'],
+                hok_rm_c2: data[i]['RMC2'],
+                hok_rm_c3: data[i]['RMC3'],
+                hok_bdl_c1: data[i]['BDLC1'],
+                hok_bdr_c2: data[i]['BDRC1'],
+                date: data[i]['TIME']
+            });
+        }
+        updatechartrt();
+    });
+
+    socket.on('rm402_data', function (data) {
+        powerdata.push(data['kWh']);
+        voltagedata.push(data['AvgV']);
+        amperedata.push(data['AvgI'] * 1000);
+        powerdata_c.push(data['kW'] * 1000);
+
+        setText("widget_countup1", parseInt(data['kWh']));
+        setText("widget_countup2", parseInt(data['AvgV']));
+        setText("widget_countup3", data['AvgI'] * 1000);
+        setText("widget_countup4", data['kW'] * 1000);
+        setText("widget_countup12", data['kWh']);
+        setText("widget_countup22", data['AvgV']);
+        setText("widget_countup32", data['AvgI'] * 1000);
+        setText("widget_countup42", data['kW'] * 1000);
+
+        if(data['WCL']){
+            state('WC_Light_State', 1);
+        }else{
+            state('WC_Light_State', 0);
+        }
+        if(data['WDL']){
+            state('WD_Light_State', 1);
+        }else{
+            state('WD_Light_State', 0);
+        }
+        if(data['RMC1'] || data['RMC2'] || data['RMC3']){
+            state('RM_Light_State', 1);
+        }else{
+            state('RM_Light_State', 0);
+        }
+        if(data['BDLC1'] || data['BDRC1']){
+            state('BD_Light_State', 1);
+        }else{
+            state('BD_Light_State', 0);
+        }
+
+
+        if (powerdata.length > 10) powerdata.shift();
+        if (voltagedata.length > 10) voltagedata.shift();
+        if (amperedata.length > 10) amperedata.shift();
+        if (powerdata_c.length > 10) powerdata_c.shift();
+        if (chartdata.length > 4000) chartdata.shift();
+
+        $("#visitsspark-chart").sparkline(powerdata, {
+            type: 'line',
+            width: '100%',
+            height: '48',
+            lineColor: '#4fb7fe',
+            fillColor: '#e7f5ff',
+            tooltipSuffix: ' kWh'
+        });
+        $('#salesspark-chart').sparkline(voltagedata,{
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#f0ad4e',
+            lineColor: '#EF6F6C',
+            tooltipSuffix: ' V'
+        });
+        $('#mousespeed').sparkline(amperedata, {
+            type: 'line',
+            height: "48",
+            width: "100%",
+            lineColor: '#0cd32d',
+            fillColor: '#27c5f0',
+            tooltipSuffix: ' mA'
+        });
+        $("#rating").sparkline(powerdata_c, {
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#FF00FF',
+            lineColor: '#DF0F7C',
+            tooltipSuffix: ' W'
+        });
+    });
+
+    function updatechartrt() {
+        AmCharts.makeChart("chartdiv",
+            {
+                "type": "serial",
+                "categoryField": "date",
+                "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
+                "categoryAxis": {
+                    "minPeriod": "ss",
+                    "parseDates": true
+                },
+                "chartCursor": {
+                    "enabled": true,
+                    "categoryBalloonDateFormat": "JJ:NN:SS"
+                },
+                "chartScrollbar": {
+                    "enabled": true
+                },
+                "trendLines": [],
+                "graphs": [
                     {
-                        "type": "serial",
-                        "categoryField": "date",
-                        "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
-                        "categoryAxis": {
-                            "minPeriod": "ss",
-                            "parseDates": true
-                        },
-                        "chartCursor": {
-                            "enabled": true,
-                            "categoryBalloonDateFormat": "JJ:NN:SS"
-                        },
-                        "chartScrollbar": {
-                            "enabled": true
-                        },
-                        "trendLines": [],
-                        "graphs": [
-                            {
-                                "bullet": "round",
-                                "id": "AmGraph-1",
-                                "title": "W",
-                                "valueField": "hok402_w"
-                            }
-                        ],
-                        "guides": [],
-                        "valueAxes": [
-                            {
-                                "id": "ValueAxis-1",
-                                "title": "Power"
-                            }
-                        ],
-                        "allLabels": [],
-                        "balloon": {},
-                        "legend": {
-                            "enabled": true,
-                            "useGraphSettings": true
-                        },
-                        "titles": [
-                            {
-                                "id": "Hok_402",
-                                "size": 15,
-                                "text": ""
-                            }
-                        ],
-                        "dataProvider": data
+                        "bullet": "round",
+                        "id": "AmGraph-1",
+                        "title": "Power",
+                        "valueField": "hok_w"
+                    },
+                    {
+                        "bullet": "round",
+                        "id": "AmGraph-2",
+                        "title": "W.C. Light",
+                        "valueField": "hok_wc_l"
+                    },
+                    {
+                        "bullet": "round",
+                        "id": "AmGraph-3",
+                        "title": "Window Light",
+                        "valueField": "hok_wd_l"
+                    },
+                    {
+                        "bullet": "round",
+                        "id": "AmGraph-4",
+                        "title": "Room_C1 Light",
+                        "valueField": "hok_rm_c1"
+                    },
+                    {
+                        "bullet": "round",
+                        "id": "AmGraph-5",
+                        "title": "Room_C2 Light",
+                        "valueField": "hok_rm_c2"
+                    },
+                    {
+                        "bullet": "round",
+                        "id": "AmGraph-6",
+                        "title": "Room_C3 Light",
+                        "valueField": "hok_rm_c3"
+                    },
+                    {
+                        "bullet": "round",
+                        "id": "AmGraph-7",
+                        "title": "BedLeft_C1 Light",
+                        "valueField": "hok_bdl_c1"
+                    },
+                    {
+                        "bullet": "round",
+                        "id": "AmGraph-8",
+                        "title": "BedRight_C1 Light",
+                        "valueField": "hok_bdr_c1"
                     }
-                );
+                ],
+                "guides": [],
+                "valueAxes": [
+                    {
+                        "id": "ValueAxis-1",
+                        "title": ""
+                    }
+                ],
+                "allLabels": [],
+                "balloon": {},
+                "legend": {
+                    "enabled": true,
+                    "useGraphSettings": true
+                },
+                "titles": [
+                    {
+                        "id": "Hok_402",
+                        "size": 15,
+                        "text": ""
+                    }
+                ],
+                "dataProvider": chartdata
             }
-        };
-        xhttp.open("GET", url, true);
-        xhttp.send(null);
+        );
     }
-    function Initerr() {
-        var url = "http://localhost:8080/err_count";
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var json = JSON.parse(xhttp.responseText);
-                setText('warning_count', json);
-            }
-        };
-        xhttp.open("GET", url, true);
-        xhttp.send(null);
-    }
-    Initdata();
+
 
     function Update() {
-        var url = "http://localhost:8080/r402";
+        var url = "http://192.168.100.34:8080/r402";
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var json = JSON.parse(xhttp.responseText);
 
-                powerdata.push(json[0]['kWh_tot']);
-                voltagedata.push(json[0]['V_avg']);
-                amperedata.push(json[0]['I_avg'] * 1000);
-                powerdata_c.push(json[0]['kW_tot'] * 1000);
 
-                setText("widget_countup1", parseInt(json[0]['kWh_tot']));
-                setText("widget_countup12", json[0]['kWh_tot']);
-                setText("widget_countup2", parseInt(json[0]['V_avg']));
-                setText("widget_countup22", json[0]['V_avg']);
-                setText("widget_countup3", json[0]['I_avg'] * 1000);
-                setText("widget_countup32", json[0]['I_avg'] * 1000);
-                setText("widget_countup4", json[0]['kW_tot'] * 1000);
-                setText("widget_countup42", json[0]['kW_tot'] * 1000);
+                powerdata.push(data['kWh_tot']);
+                voltagedata.push(data['V_avg']);
+                amperedata.push(data['I_avg'] * 1000);
+                powerdata_c.push(data['kW_tot'] * 1000);
 
-                if(json[0]['wc_light_status']){
+
+                chartdata.push({
+                    hok_w: parseFloat(data['kW_tot'])*1000,
+                    hok_wc_l: data['wc_light_status'] * 3000,
+                    hok_wd_l: data['windows_light_status'] * 3000,
+                    hok_rm_c1: data['Room_lights_C1'],
+                    hok_rm_c2: data['Room_lights_C2'],
+                    hok_rm_c3: data['Room_lights_C3'],
+                    hok_bdl_c1: data['BedLeft_lights_C1'],
+                    hok_bdr_c2: data['BedRight_lights_C1'],
+                    date: data['datetime']
+                });
+
+                setText("widget_countup1", parseInt(data['kWh_tot']));
+                setText("widget_countup12", data['kWh_tot']);
+                setText("widget_countup2", parseInt(data['V_avg']));
+                setText("widget_countup22", data['V_avg']);
+                setText("widget_countup3", data['I_avg'] * 1000);
+                setText("widget_countup32", data['I_avg'] * 1000);
+                setText("widget_countup4", data['kW_tot'] * 1000);
+                setText("widget_countup42", data['kW_tot'] * 1000);
+
+                if(data['wc_light_status']){
                     state('WC_Light_State', 1);
                 }else{
                     state('WC_Light_State', 0);
                 }
-                if(json[0]['windows_light_status']){
+                if(data['windows_light_status']){
                     state('WD_Light_State', 1);
                 }else{
                     state('WD_Light_State', 0);
                 }
-                if(json[0]['Room_lights_C1'] || json[0]['Room_lights_C2'] || json[0]['Room_light_C3']){
+                if(data['Room_lights_C1'] || data['Room_lights_C2'] || data['Room_light_C3']){
                     state('RM_Light_State', 1);
                 }else{
                     state('RM_Light_State', 0);
                 }
-                if(json[0]['BedLeft_lights_C1'] || json[0]['BedRight_lights_C2']){
+                if(data['BedLeft_lights_C1'] || data['BedRight_lights_C2']){
                     state('BD_Light_State', 1);
                 }else{
                     state('BD_Light_State', 0);
@@ -285,7 +443,8 @@ $(document).ready(function() {
                 if (powerdata.length > 10) powerdata.shift();
                 if (voltagedata.length > 10) voltagedata.shift();
                 if (amperedata.length > 10) amperedata.shift();
-                if (powerdata_c.length > 5000) powerdata_c.shift();
+                if (powerdata_c.length > 10) powerdata_c.shift();
+                chartdata.shift();
 
                 $("#visitsspark-chart").sparkline(powerdata, {
                     type: 'line',
@@ -324,7 +483,24 @@ $(document).ready(function() {
         xhttp.open("GET", url, true);
         xhttp.send(null);
     }
+    updatechartpie();
 
+    function updatechartpie() {
+        var chart1=c3.generate({bindto:'#chart1',data:{
+            columns:[['data1',12],['data2',108]],type:'donut'},
+            donut:{title:"Iris Petal Width"},
+            color:{pattern:['#00c0ef','#0fb0c0','#668cff','#ffb300','#69B3BF']}
+        });
+        setTimeout(function(){chart1.load({
+            columns:[["setosa",0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1,0.2,0.2,0.1,0.1,0.2,0.4,0.4,0.3,0.3
+                ,0.3,0.2,0.4,0.2,0.5,0.2,0.2,0.4,0.2,0.2,0.2,0.2,0.4,0.1,0.2,0.2,0.2,0.2,0.1,0.2,0.2,0.3,0.3,0.2,
+                0.6,0.4,0.3,0.2,0.2,0.2,0.2],["versicolor",1.4,1.5,1.5,1.3,1.5,1.3,1.6,1.0,1.3,1.4,1.0,1.5,1.0,1.4,1.3,1.4,1.5,
+                1.0,1.5,1.1,1.8,1.3,1.5,1.2,1.3,1.4,1.4,1.7,1.5,1.0,1.1,1.0,1.2,1.6,1.5,1.6,1.5,1.3,1.3,1.3,1.2,1.4,1.2,1.0,1.3,
+                1.2,1.3,1.3,1.1,1.3],["virginica",2.5,1.9,2.1,1.8,2.2,2.1,1.7,1.8,1.8,2.5,2.0,1.9,2.1,2.0,2.4,2.3,1.8,2.2,2.3,1.5,
+                2.3,2.0,2.0,1.8,2.1,1.8,1.8,1.8,2.1,1.6,1.9,2.0,2.2,1.5,1.4,2.3,2.4,1.8,1.8,2.1,2.4,2.3,1.9,2.3,2.5,2.3,1.9,2.0,2.3,
+                1.8]]});},1500);
+        setTimeout(function(){chart1.unload({ids:'data1'});chart1.unload({ids:'data2'});},5000);
+    }
 
 //   flip js
 
@@ -341,342 +517,5 @@ $(document).ready(function() {
         prefix: '',
         suffix: ''
     };
-
-
-//=================================main chart================================
-
-// Chartist
-    var Chartist1 = new Chartist.Line('#chart1', {
-        labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-        series: [{
-            label: 'Views',
-            data: [{meta: 'Views', value: 4},
-                {meta: 'Views', value: 6},
-                {meta: 'Views', value: 4},
-                {meta: 'Views', value: 7},
-                {meta: 'Views', value: 4},
-                {meta: 'Views', value: 6},
-                {meta: 'Views', value: 3},
-                {meta: 'Views', value: 7},
-                {meta: 'Views', value: 3},
-                {meta: 'Views', value: 6},
-
-                {meta: 'Views', value: 4},
-                {meta: 'Views', value: 6}]
-        },
-
-            {
-                label: 'Sales',
-                data: [{meta: 'Sales', value: 1},
-                    {meta: 'Sales', value: 3},
-                    {meta: 'Sales', value: 1},
-                    {meta: 'Sales', value: 4},
-                    {meta: 'Sales', value: 1},
-                    {meta: 'Sales', value: 3},
-                    {meta: 'Sales', value: 1},
-                    {meta: 'Sales', value: 3},
-                    {meta: 'Sales', value: 1},
-                    {meta: 'Sales', value: 4},
-                    {meta: 'Sales', value: 1},
-                    {meta: 'Sales', value: 3}]
-            }]
-    }, {
-        height: 300,
-        fullWidth: true,
-        low: 0,
-        high: 7,
-        showArea: true,
-        axisY: {
-            onlyInteger: true,
-            offset: 20
-        }
-        ,
-        plugins: [
-            Chartist.plugins.tooltip()
-        ]
-    });
-
-    Chartist1.on('draw', function (data) {
-
-
-        if (data.type === 'point') {
-            data.element.animate({
-                y1: {
-                    begin: 100 * data.index,
-                    dur: 2000,
-                    from: data.y + 1000,
-                    to: data.y,
-                    easing: Chartist.Svg.Easing.easeOutQuint
-                },
-                y2: {
-                    begin: 100 * data.index,
-                    dur: 2000,
-                    from: data.y + 1000,
-                    to: data.y,
-                    easing: Chartist.Svg.Easing.easeOutQuint
-                }
-            });
-        }
-
-        if (data.type === 'line' || data.type === 'area') {
-            data.element.animate({
-                d: {
-                    begin: 2000 * data.index,
-                    dur: 2000,
-                    from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
-                    to: data.path.clone().stringify(),
-                    easing: Chartist.Svg.Easing.easeOutQuint
-                }
-            });
-        }
-    });
-//===============================coding docs desingi=====================================
-
-    $('#myStat').circliful({
-        animationStep: 5,
-        fillColor: '#4fb7fe',
-        foregroundBorderWidth: 5,
-        percent: 40
-    });
-    $('#myStat2').circliful({
-        animationStep: 5,
-        fillColor: '#00cc99',
-        foregroundBorderWidth: 5,
-        percent: 60
-    });
-    $('#myStat3').circliful({
-        animationStep: 5,
-        fillColor: '#ff9933',
-        foregroundBorderWidth: 5,
-        percent: 75
-    });
-
-
-    //server load
-    var flot2 = function() {
-        // We use an inline data source in the example, usually data would
-        // be fetched from a server
-        var data = [],
-            totalPoints = 100;
-
-        function getRandomData() {
-            if (data.length > 0)
-                data = data.slice(1);
-            // Do a random walk
-            while (data.length < totalPoints) {
-                var prev = data.length > 0 ? data[data.length - 1] : 50,
-                    y = prev + Math.random() * 10 - 5;
-                if (y < 0) {
-                    y = 0;
-                } else if (y > 100) {
-                    y = 100;
-                }
-                data.push(y);
-            }
-            // Zip the generated y values with the x values
-            var res = [];
-            for (var i = 0; i < data.length; ++i) {
-                res.push([i, data[i]])
-            }
-            return res;
-        }
-        var plot2 = $.plot("#order_realtime", [getRandomData()], {
-            series: {
-                shadowSize: 0 // Drawing is faster without shadows
-            },
-            yaxis: {
-                min: 0,
-                max: 100
-            },
-            xaxis: {
-                show: false
-            },
-            colors: ["#22BAA0"],
-            legend: {
-                show: false
-            },
-            grid: {
-                color: "#AFAFAF",
-                hoverable: true,
-                borderWidth: 0,
-                backgroundColor: '#FFF'},
-            tooltip: true,
-            tooltipOpts: {
-                content: "Y: %y",
-                defaultTheme: false
-            }
-        });
-
-        function update() {
-            plot2.setData([getRandomData()]);
-            plot2.draw();
-            setTimeout(update, 30);
-        }
-        update();
-    };
-    flot2();
-
-
-
-    //server load
-    var flot3 = function() {
-        // We use an inline data source in the example, usually data would
-        // be fetched from a server
-        var data = [],
-            totalPoints = 100;
-
-        function getRandomData() {
-            if (data.length > 0)
-                data = data.slice(1);
-            // Do a random walk
-            while (data.length < totalPoints) {
-                var prev = data.length > 0 ? data[data.length - 1] : 50,
-                    y = prev + Math.random() * 10 - 5;
-                if (y < 0) {
-                    y = 0;
-                } else if (y > 100) {
-                    y = 100;
-                }
-                data.push(y);
-            }
-            // Zip the generated y values with the x values
-            var res = [];
-            for (var i = 0; i < data.length; ++i) {
-                res.push([i, data[i]])
-            }
-            return res;
-        }
-        var plot3 = $.plot("#sale_realtime", [getRandomData()], {
-            series: {
-                shadowSize: 0 // Drawing is faster without shadows
-            },
-            yaxis: {
-                min: 0,
-                max: 100
-            },
-            xaxis: {
-                show: false
-            },
-            colors: ["#4fb7fe"],
-            legend: {
-                show: false
-            },
-            grid: {
-                color: "#AFAFAF",
-                hoverable: true,
-                borderWidth: 0,
-                backgroundColor: '#FFF'},
-            tooltip: true,
-            tooltipOpts: {
-                content: "Y: %y",
-                defaultTheme: false
-            }
-        });
-
-        function update() {
-            plot3.setData([getRandomData()]);
-            plot3.draw();
-            setTimeout(update, 30);
-        }
-        update();
-    };
-    flot3();
-
-
-
-
-    //server load
-    var flot4 = function() {
-        // We use an inline data source in the example, usually data would
-        // be fetched from a server
-        var data = [],
-            totalPoints = 100;
-
-        function getRandomData() {
-            if (data.length > 0)
-                data = data.slice(1);
-            // Do a random walk
-            while (data.length < totalPoints) {
-                var prev = data.length > 0 ? data[data.length - 1] : 50,
-                    y = prev + Math.random() * 10 - 5;
-                if (y < 0) {
-                    y = 0;
-                } else if (y > 100) {
-                    y = 100;
-                }
-                data.push(y);
-            }
-            // Zip the generated y values with the x values
-            var res = [];
-            for (var i = 0; i < data.length; ++i) {
-                res.push([i, data[i]])
-            }
-            return res;
-        }
-        var plot4 = $.plot("#users_realtime", [getRandomData()], {
-            series: {
-                shadowSize: 0 // Drawing is faster without shadows
-            },
-            yaxis: {
-                min: 0,
-                max: 100
-            },
-            xaxis: {
-                show: false
-            },
-            colors: ["#ff9933"],
-            legend: {
-                show: false
-            },
-            grid: {
-                color: "#AFAFAF",
-                hoverable: true,
-                borderWidth: 0,
-                backgroundColor: '#FFF'},
-            tooltip: true,
-            tooltipOpts: {
-                content: "Y: %y",
-                defaultTheme: false
-            }
-        });
-
-        function update() {
-            plot4.setData([getRandomData()]);
-            plot4.draw();
-            setTimeout(update, 30);
-        }
-        update();
-    };
-    flot4();
-    // ==================================monthly up laod=================================
-
-    $("#test-circle").circliful({
-        animation: 1,
-        animationStep: 1,
-        foregroundBorderWidth: 15,
-        backgroundBorderWidth: 15,
-        percent: 75,
-        textSize: 28,
-        textStyle: 'font-size: 12px;',
-        textColor: '#666',
-        multiPercentage: 1,
-        percentages: [10, 20, 30]
-    });
-
-    function spark_sales_upload() {
-        var barParentdiv = $('#monthly_upload').closest('div');
-        var barCount = [71, 72, 73, 72, 75, 73, 75, 76, 75, 76, 75, 77, 78, 78, 76, 77, 74, 73, 75, 74, 72, 73, 75, 74, 73, 72, 71];
-        var barSpacing = 2;
-        $("#monthly_upload").sparkline(barCount, {
-            type: 'bar',
-            width: '100%',
-            barWidth: (barParentdiv.width() - (barCount.length * barSpacing)) / barCount.length,
-            height: '50',
-            barSpacing: barSpacing,
-            barColor: '#4FB7FE',
-            tooltipSuffix: '%'
-        });
-    }
-    spark_sales_upload();
 
 });

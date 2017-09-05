@@ -11,6 +11,10 @@
     <link style="width:24px;height:33px;" rel="shortcut icon" href="img_new/hok_house_nb.png"/>
 
     <!--global styles-->
+    <link type="text/css" rel="stylesheet" href="css_new/stylesheet_rkcharts.css"/>
+    <link type="text/css" rel="stylesheet" href="css_new/stylesheet_p_notify.css"/>
+    <link type="text/css" rel="stylesheet" href="css_new/stylesheet_izitoast.css"/>
+    <link type="text/css" rel="stylesheet" href="css_new/stylesheet_adcharts.css"/>
     <link type="text/css" rel="stylesheet" href="css_new/stylesheet_buttons.css">
     <link type="text/css" rel="stylesheet" href="css_new/stylesheet_index.css">
     <!-- end of global styles-->
@@ -271,58 +275,60 @@ z-index: 999999">
                         </div>
                     </div>
 
-
                     <div class="row m-t-35">
                         <div class="col-xl-12">
                             <div class="bg-white section_border circliful_section">
                                 <div class="tab-content text-center">
-                                    <div class="tab-pane active" id="fa-icons">
+                                    <div class="tab-pane active" id="chart_realtime">
                                         <div class="card">
                                             <div class="card-header bg-white">
-                                                <span class="card-title">即時動態圖表</span>
+                                                <span class="card-title">動態即時圖表</span>
                                             </div>
                                             <div class="card-block">
-                                                <div class="demo-chartist mb-md m-t-15" style="width:100%;height:400px;" id="chartdiv"></div>
+                                                <div class="mb-md m-t-15" style="width:100%;height:320px;" id="chartdiv"></div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane" id="themify-icons">
+                                    <div class="tab-pane" id="chart_status">
                                         <div class="card">
                                             <div class="card-header bg-white">
                                                 <span class="card-title">狀態資訊圖表</span>
                                             </div>
                                             <div class="card-block">
-                                                <div class="demo-chartist mb-md m-t-15" id="chart1"></div>
+                                                <div class="mb-md m-t-15" id="chart4"></div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane" id="ionicons">
+                                    <div class="tab-pane" id="chart_trend">
                                         <div class="card">
                                             <div class="card-header bg-white">
                                                 <span class="card-title">趨勢分析圖表</span>
                                             </div>
-                                            <div class="card-block">
+                                            <div class="card-block m-t-35">
+                                                <div id="chart2"></div>
+                                                <div id="slider2"></div>
+                                                <div id="legend_chart2"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <ul class="nav nav-tabs m-t-35 text-center">
                                     <li class="nav-item">
-                                        <a class="nav-link active" href="#fa-icons" data-toggle="tab">
-                                            <div><i class="fa fa-pie-chart"></i></div>
-                                            <span>即時動態圖表</span>
+                                        <a class="nav-link active" href="#chart_realtime" data-toggle="tab">
+                                            <div><i class="fa fa-bar-chart-o"></i></div>
+                                            <span>動態即時圖表</span>
                                         </a>
                                     </li>
                                     <li class="nav-item" id="themify_icon">
-                                        <a class="nav-link" href="#themify-icons" data-toggle="tab">
-                                            <div><i class="fa fa-check-square-o"></i></div>
+                                        <a class="nav-link" href="#chart_status" data-toggle="tab">
+                                            <div><i class="fa fa-bar-chart-o"></i></div>
                                             <span>狀態資訊圖表</span>
                                         </a>
                                     </li>
 
                                     <li class="nav-item" id="ionicons_tab">
-                                        <a class="nav-link" href="#ionicons" data-toggle="tab">
-                                            <div><i class="fa fa-pencil"></i></div>
+                                        <a class="nav-link" href="#chart_trend" data-toggle="tab">
+                                            <div><i class="fa fa-area-chart"></i></div>
                                             <span>趨勢分析圖表</span>
                                         </a>
                                     </li>
@@ -331,86 +337,21 @@ z-index: 999999">
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-lg-3 m-t-35">
-                            <div class="bg-white section_border circliful_section">
-                                <div class="tab-content text-center">
-                                    <div class="tab-pane active" id="fa-icons">
-                                        <h4 class="p-t-30"></h4>
-                                        <div id="myStat">Hello 1</div>
-                                    </div>
-                                    <div class="tab-pane" id="themify-icons">
-                                        <h4 class="p-t-30">Hello 2</h4>
-                                        <div id="myStat2"></div>
-                                    </div>
-                                    <div class="tab-pane" id="ionicons">
-                                        <h4 class="p-t-30">Hello 3</h4>
-                                        <div id="myStat3"></div>
-                                    </div>
-                                </div>
-                                <ul class="nav nav-tabs m-t-35 text-center">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" href="#fa-icons" data-toggle="tab">
-                                            <div><i class="fa fa-pie-chart"></i></div>
-                                            <span>Hello1</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item" id="themify_icon">
-                                        <a class="nav-link" href="#themify-icons" data-toggle="tab">
-                                            <div><i class="fa fa-check-square-o"></i></div>
-                                            <span>Hello 2</span>
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item" id="ionicons_tab">
-                                        <a class="nav-link" href="#ionicons" data-toggle="tab">
-                                            <div><i class="fa fa-pencil"></i></div>
-                                            <span>Hello 3</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="card m-t-35 real_charts">
+                    <div class="row col-lg-5">
+                        <div class="col-lg-12">
+                            <div class="card m-t-35">
                                 <div class="card-header bg-white">
-                                    <ul class="nav nav-tabs" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active text-center" href="#orders_section" role="tab" data-toggle="tab">Orders</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-center" href="#sales_section" role="tab" data-toggle="tab">Sales</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-center" href="#users_section" role="tab" data-toggle="tab">Users</a>
-                                        </li>
-                                    </ul>
+                                    Donut Chart
                                 </div>
-                                <div class="card-block">
-
-
-                                    <!-- Tab panes -->
-                                    <div class="tab-content m-t-20">
-                                        <div role="tabpanel" class="tab-pane fade show active" id="orders_section">
-                                            <div id="order_realtime" class="flotChart1">
-                                            </div>
-                                        </div>
-                                        <div role="tabpanel" class="tab-pane fade" id="sales_section">
-                                            <div id="sale_realtime" class="flotChart1">
-
-                                            </div>
-                                        </div>
-                                        <div role="tabpanel" class="tab-pane fade" id="users_section">
-                                            <div id="users_realtime" class="flotChart1">
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="card-block m-t-35">
+                                    <div id="chart1"></div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-lg-5 col-12 m-t-35">
+                    <div class="row">
+                        <div class="col-lg-7 col-12 m-t-35">
                             <div class="row">
                                 <div class="col-12 text-center text-white">
                                     <div class="lorem_background">
@@ -461,117 +402,8 @@ z-index: 999999">
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-5">
-                            <div class="row">
-                                <div class="col-12 m-t-35">
-                                    <div class="weather_img">
-                                        <div class="row header_align">
-                                            <div class="col-sm-8 col-7 text-white info">
-                                                <div class="city">City: Kaohsiung</div>
-                                                <div class="night">Night - 21:17 PM</div>
 
-                                                <div class="temp">32<sup>o</sup></div>
-                                                <div class="wind">
-                                                    <span>28 km/h</span>
-                                                </div>
-                                            </div>
-                                            <div class="icon col-5 col-sm-4">
-                                                <img src="img/weather1.png" alt="weather" class="img-fluid">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="background_opacity">
-                                                    <div class="row header_align">
-                                                        <div class="col-2 border_right days_margin_top">
-                                                            <div class="day text-center">
-                                                                <div class="day_font">Mon</div>
-                                                                <div>
-                                                                    <img src="img/w5.png" alt="weather" class="img-fluid">
-                                                                </div>
-                                                                <div class="day_font">30<sup>o</sup></div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-2 border_right days_margin_top">
-                                                            <div class="day text-center">
-                                                                <div class="day_font">Tue</div>
-                                                                <div>
-                                                                    <img src="img/w2.png" alt="weather" class="img-fluid">
-                                                                </div>
-                                                                <div class="day_font">29<sup>o</sup></div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-2 border_right days_margin_top">
-                                                            <div class="day text-center">
-                                                                <div class="day_font">Wed</div>
-                                                                <div>
-                                                                    <img src="img/w3.png" alt="weather" class="img-fluid">
-                                                                </div>
-                                                                <div class="day_font">34<sup>o</sup></div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-2 border_right days_margin_top">
-                                                            <div class="day text-center">
-                                                                <div class="day_font">Thu</div>
-                                                                <div>
-                                                                    <img src="img/w4.png" alt="weather" class="img-fluid">
-                                                                </div>
-                                                                <div class="day_font">32<sup>o</sup></div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-2 border_right days_margin_top">
-                                                            <div class="day text-center">
-                                                                <div class="day_font">Fri</div>
-                                                                <div>
-                                                                    <img src="img/w5.png" alt="weather" class="img-fluid">
-                                                                </div>
-                                                                <div class="day_font">35<sup>o</sup></div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-2 days_margin_top">
-                                                            <div class="day text-center">
-                                                                <div class="day_font">Sat</div>
-                                                                <div>
-                                                                    <img src="img/w2.png" alt="weather" class="img-fluid">
-                                                                </div>
-                                                                <div class="day_font">36<sup>o</sup></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="card m-t-35">
 
-                                <div class="card-block m-t-10">
-                                    <!--<svg id="fillgauge1"  width="100%" height="193"></svg>-->
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <h5>Average Monthly Uploads</h5>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div id="test-circle">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <br/>
-                                            <span id="monthly_upload"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-lg-4 m-t-35">
                             <div class="social-counter text-center">
                                 <ul class="m-b-0">
@@ -644,8 +476,46 @@ z-index: 999999">
 <script src="javascripts/serial.js"></script>
 <script src="javascripts/export.min.js"></script>
 <link rel="stylesheet" href="css_new/export.css" type="text/css" media="all" />
+
 <script type="text/javascript" src="js/pages/index.js"></script>
 
+
+
+<!-- plugin script -->
+<script type="text/javascript" src="vendors/raphael/js/raphael-min.js.pagespeed.jm.mdymR_0MgC.js"></script>
+<script type="text/javascript" src="vendors/justgage/js/justgage.js.pagespeed.jm.AXTAmfTJl6.js"></script>
+<script type="text/javascript" src="vendors/d3/js/d3.min.js.pagespeed.jm.hcZ4wO0QRk.js"></script>
+<script type="text/javascript" src="vendors/c3/js/c3.min.js.pagespeed.ce.nEKX37kL43.js"></script>
+<!-- end of plugin script -->
+
+<!-- Plugin scripts -->
+<script type="text/javascript" src="vendors/izitoast/js/iziToast.min.js.pagespeed.ce.yubeP2Xtg-.js"></script>
+<!--
+<script type="text/javascript" src="vendors/raphael/js/raphael-min.js.pagespeed.jm.mdymR_0MgC.js"></script>
+<script type="text/javascript" src="vendors/justgage/js/justgage.js.pagespeed.jm.AXTAmfTJl6.js"></script>
+<script type="text/javascript" src="vendors/d3/js/d3.min.js.pagespeed.jm.hcZ4wO0QRk.js"></script>
+<script type="text/javascript" src="vendors/c3/js/c3.min.js.pagespeed.ce.nEKX37kL43.js"></script>
+<!--
+<script type="text/javascript" src="vendors/rickshaw/js/rickshaw.min.js.pagespeed.jm.zE-3sN3knm.js"></script>
+
+
+<script type="text/javascript" src="js/pages/richshaw_chart.js.pagespeed.jm.CY8gyLdvcb.js"></script>
+
+<!--Page level scripts-->
+
+<script src="vendors/javascript_p_notify.js"></script>
+<script>eval(mod_pagespeed_PgBWTwAB3I);</script>
+<script>eval(mod_pagespeed_37O3ld5zoQ);</script>
+<script>eval(mod_pagespeed_ZzmY5mTsAs);</script>
+<script>eval(mod_pagespeed_jVUCZO33_F);</script>
+<script>eval(mod_pagespeed_IZ2qoLVjJy);</script>
+<script>eval(mod_pagespeed_5QWOUcvZEj);</script>
+<script>eval(mod_pagespeed_vHxvsCIMRH);</script>
+<script>eval(mod_pagespeed_BityH3aJ10);</script>
+<script>eval(mod_pagespeed_WX_WC_ZJ7M);</script>
+<script>eval(mod_pagespeed_0hM1ZEEq1u);</script>
+<script type="text/javascript" src="js/pages/p_notify.js.pagespeed.jm.E2cU5JtMgK.js"></script>
+<!--End of plugin scripts-->
 </body>
 
 <!-- Mirrored from demo.lorvent.com/demo_admire/admire_html/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 01 Sep 2017 07:01:26 GMT -->
