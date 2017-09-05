@@ -1,28 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="18f4f3ba-9e30-48f7-b73e-2ec605b60aee" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/img_new/hok_house_nb.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/img_new/icon_kWh.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/css_new/export.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/css_new/stylesheet_buttons.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/css_new/stylesheet_cards.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/css_new/stylesheet_table.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/javascripts/amcharts.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/javascripts/amstock.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/javascripts/export.min.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/javascripts/images/dragIconRoundBig.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/javascripts/images/lens.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/javascripts/serial.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/css_new/stylesheet_index.css" afterPath="$PROJECT_DIR$/public/css_new/stylesheet_index.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/pages/index.js" afterPath="$PROJECT_DIR$/public/js/pages/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/index.js" afterPath="$PROJECT_DIR$/routes/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.js" afterPath="$PROJECT_DIR$/server.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/error.ejs" afterPath="$PROJECT_DIR$/views/error.ejs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.ejs" afterPath="$PROJECT_DIR$/views/index.ejs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/rm402.ejs" afterPath="$PROJECT_DIR$/views/rm402.ejs" />
-    </list>
+    <list default="true" id="18f4f3ba-9e30-48f7-b73e-2ec605b60aee" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -56,8 +35,8 @@
       <file leaf-file-name="index.ejs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/index.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="292">
-              <caret line="499" column="18" lean-forward="true" selection-start-line="499" selection-start-column="18" selection-end-line="499" selection-end-column="18" />
+            <state relative-caret-position="508">
+              <caret line="508" column="40" lean-forward="true" selection-start-line="508" selection-start-column="40" selection-end-line="508" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -141,9 +120,9 @@
         <option value="$PROJECT_DIR$/server.js" />
         <option value="$PROJECT_DIR$/public/css_new/stylesheet_index.css" />
         <option value="$PROJECT_DIR$/public/js/pages/index.js" />
-        <option value="$PROJECT_DIR$/views/index.ejs" />
         <option value="$PROJECT_DIR$/public/javascripts/amcharts.js" />
         <option value="$PROJECT_DIR$/views/rm402.ejs" />
+        <option value="$PROJECT_DIR$/views/index.ejs" />
       </list>
     </option>
   </component>
@@ -358,12 +337,12 @@
       <workItem from="1504143798268" duration="28000" />
       <workItem from="1504143880566" duration="44274000" />
       <workItem from="1504489598920" duration="3106000" />
-      <workItem from="1504492930773" duration="29152000" />
+      <workItem from="1504492930773" duration="29318000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="150465000" />
+    <option name="totallyTimeSpent" value="150631000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -704,8 +683,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/index.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="292">
-          <caret line="499" column="18" lean-forward="true" selection-start-line="499" selection-start-column="18" selection-end-line="499" selection-end-column="18" />
+        <state relative-caret-position="508">
+          <caret line="508" column="40" lean-forward="true" selection-start-line="508" selection-start-column="40" selection-end-line="508" selection-end-column="40" />
           <folding />
         </state>
       </provider>
