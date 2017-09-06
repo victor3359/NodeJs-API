@@ -89,7 +89,6 @@ function Initerr() {
             error_count = objects.length;
             socket.emit('update_errcount', objects.length.toString());
             socket.emit('error_info_page', objects);
-            db.close();
         });
     });
 }
@@ -100,27 +99,6 @@ setInterval(updatedata, 2000);
 function Initchart() {
     var data = [];
     mongodb.connect(url, function (err, db) {
-        db.collection('Device_info').find({Room_num: '402'}).sort({_id: -1}).limit(2000).toArray(function (mongoError, objects) {
-            if (mongoError) throw mongoError;
-            for (var i = 0; i < 2000; i++) {
-                data.push({
-                    kWh: objects[i]['kWh_tot'],
-                    AvgV: objects[i]['V_avg'],
-                    AvgI: objects[i]['I_avg'],
-                    kW: objects[i]['kW_tot'],
-                    WCL: objects[i]['wc_light_status'],
-                    WDL: objects[i]['windows_light_status'],
-                    RMC1: objects[i]['Room_lights_C1'],
-                    RMC2: objects[i]['Room_lights_C2'],
-                    RMC3: objects[i]['Room_lights_C3'],
-                    BDLC1: objects[i]['BedLeft_lights_C1'],
-                    BDRC1: objects[i]['BedRight_lights_C1'],
-                    TIME: objects[i]['datetime']
-                });
-            }
-            db.close();
-            socket.emit('rm402_chart_init', data);
-        });
         db.collection('Device_info').find({Room_num:{$gt:'400'}}).sort({_id:-1}).limit(6).toArray(function (mongoError, objects) {
             if(mongoError) throw mongoError;
             objects.sort(function (a ,b) {
@@ -142,6 +120,57 @@ function Initchart() {
             };
             socket.emit('update_pie', rmkWh);
         });
+        db.collection('Device_info').find({Room_num:{$gt:'400'}}).sort({_id:-1}).limit(6).toArray(function (mongoError, objects) {
+            if(mongoError) throw mongoError;
+            objects.sort(function (a ,b) {
+                return a.Room_num - b.Room_num;
+            });
+            var rmkWh = {
+                Rm_401: objects[0]['kW_tot'] * 1000,
+                Rm_402: objects[1]['kW_tot'] * 1000,
+                Rm_403: objects[2]['kW_tot'] * 1000,
+                Rm_404: objects[3]['kW_tot'] * 1000,
+                Rm_405: objects[4]['kW_tot'] * 1000,
+                Rm_406: objects[5]['kW_tot'] * 1000
+            };
+            socket.emit('update_kWh', rmkWh);
+        });
+
+        db.collection('Device_info').find({Room_num: '402'}).sort({_id: -1}).limit(2000).toArray(function (mongoError, objects) {
+            if (mongoError) throw mongoError;
+            for (var i = 0; i < 2000; i++) {
+                data.push({
+                    kWh: objects[i]['kWh_tot'],
+                    AvgV: objects[i]['V_avg'],
+                    AvgI: objects[i]['I_avg'],
+                    kW: objects[i]['kW_tot'],
+                    WCL: objects[i]['wc_light_status'],
+                    WDL: objects[i]['windows_light_status'],
+                    RMC1: objects[i]['Room_lights_C1'],
+                    RMC2: objects[i]['Room_lights_C2'],
+                    RMC3: objects[i]['Room_lights_C3'],
+                    BDLC1: objects[i]['BedLeft_lights_C1'],
+                    BDRC1: objects[i]['BedRight_lights_C1'],
+                    TIME: objects[i]['datetime']
+                });
+            }
+            socket.emit('rm402_chart_init', data);
+        });
+
+        db.collection('Device_info').find({Room_num:'402'}).sort({_id:-1}).limit(10001).toArray(function (mongoError, objects) {
+            if(mongoError) throw mongoError;
+            var data = [];
+            for(var i = 0;i < objects.length;i++){
+                if(i%1000 == 0) {
+                    data.push({
+                        kWh: objects[i]['kWh_tot'],
+                        W: objects[i]['kW_tot'] * 1000,
+                        DATE: date.format(date.parse(objects[i]['datetime'], 'YYYY/MM/DD HH:mm:ss'), 'HH:mm:ss')
+                    });
+                }
+            }
+            socket.emit('chart_status', data);
+        });
     });
 }
 
@@ -162,7 +191,6 @@ function Initdata(){
                 BDLC1: objects[0]['BedLeft_lights_C1'],
                 BDRC1: objects[0]['BedRight_lights_C1']
             };
-            db.close();
             socket.emit('rm402_init', data);
         });
     });
@@ -189,8 +217,22 @@ function updatechart() {
                     TIME: objects[i]['datetime']
                 });
             }
-            db.close();
             socket.emit('rm402_chart_data', data);
+        });
+        db.collection('Device_info').find({Room_num:{$gt:'400'}}).sort({_id:-1}).limit(6).toArray(function (mongoError, objects) {
+            if(mongoError) throw mongoError;
+            objects.sort(function (a ,b) {
+                return a.Room_num - b.Room_num;
+            });
+            var rmkWh = {
+                Rm_401: objects[0]['kW_tot'] * 1000,
+                Rm_402: objects[1]['kW_tot'] * 1000,
+                Rm_403: objects[2]['kW_tot'] * 1000,
+                Rm_404: objects[3]['kW_tot'] * 1000,
+                Rm_405: objects[4]['kW_tot'] * 1000,
+                Rm_406: objects[5]['kW_tot'] * 1000
+            };
+            socket.emit('update_kWh', rmkWh);
         });
     });
 }
@@ -225,6 +267,7 @@ function updatedata() {
                 socket.emit('update_errcount', objects.length.toString());
                 error_count = objects.length;
             }
+            //socket.emit('error_info' ,objects);
         });
     });
 }

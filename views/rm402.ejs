@@ -282,7 +282,7 @@ z-index: 999999">
                                     <div class="tab-pane active" id="chart_realtime">
                                         <div class="card">
                                             <div class="card-header bg-white">
-                                                <span class="card-title">動態即時圖表</span>
+                                                <span class="card-title">動態即時資訊</span>
                                             </div>
                                             <div class="card-block">
                                                 <div class="mb-md m-t-15" style="width:100%;height:320px;" id="rt_chart"></div>
@@ -292,20 +292,21 @@ z-index: 999999">
                                     <div class="tab-pane" id="chart_status">
                                         <div class="card">
                                             <div class="card-header bg-white">
-                                                <span class="card-title">狀態資訊圖表</span>
+                                                <span class="card-title">耗電功率分析</span>
                                             </div>
                                             <div class="card-block">
-                                                <div class="mb-md m-t-15" id="chart4"></div>
+                                                <!--<div class="mb-md m-t-15" id="chart_status"></div>-->
+                                                <div id="container" class="mb-md m-t-15" style="width:100%; height: 320px;"></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="chart_trend">
                                         <div class="card">
                                             <div class="card-header bg-white">
-                                                <span class="card-title">趨勢分析圖表</span>
+                                                <span class="card-title">每日用電分析</span>
                                             </div>
                                             <div class="card-block m-t-35">
-                                                <div class="mb-md m-t-15" style="height:320px;" id="chart2"></div>
+                                                <div class="mb-md m-t-15" style="height:320px;" id="chart_trend"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -314,20 +315,20 @@ z-index: 999999">
                                     <li class="nav-item">
                                         <a class="nav-link active" href="#chart_realtime" data-toggle="tab">
                                             <div><i class="fa fa-bar-chart-o"></i></div>
-                                            <span>動態即時圖表</span>
+                                            <span>動態即時資訊</span>
                                         </a>
                                     </li>
                                     <li class="nav-item" id="themify_icon">
                                         <a class="nav-link" href="#chart_status" data-toggle="tab">
                                             <div><i class="fa fa-bar-chart-o"></i></div>
-                                            <span>狀態資訊圖表</span>
+                                            <span>功耗資訊分析</span>
                                         </a>
                                     </li>
 
                                     <li class="nav-item" id="ionicons_tab">
                                         <a class="nav-link" href="#chart_trend" data-toggle="tab">
                                             <div><i class="fa fa-area-chart"></i></div>
-                                            <span>趨勢分析圖表</span>
+                                            <span>每日用電分析</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -352,7 +353,7 @@ z-index: 999999">
                         <div class="col-lg-12">
                             <div class="card m-t-35">
                                 <div class="card-header bg-white">
-                                    即時用電分析 （kWh）
+                                    即時用電分析 （W）
                                 </div>
                                 <div class="card-block m-t-35">
                                     <div class="mb-md m-t-15" id="chart_kWh"></div>
@@ -486,6 +487,8 @@ z-index: 999999">
 <script src="javascripts/amstock.js"></script>
 <script src="javascripts/serial.js"></script>
 <script src="javascripts/export.min.js"></script>
+<script src="javascripts/highcharts.js"></script>
+<script src="javascripts/exporting.js"></script>
 <link rel="stylesheet" href="css_new/export.css" type="text/css" media="all" />
 
 <script type="text/javascript" src="js/pages/index.js"></script>

@@ -306,6 +306,187 @@ $(document).ready(function() {
             }
             ,8000);
     });
+    /*
+        function updatechart_status() {
+            var chart4 = c3.generate({
+                bindto: '#chart_status',
+                data: {
+                    columns: [['Kilowatt-Hour', 30, 200, 100, 400, 150, 250],
+                        ['Power-Watt', 50, 20, 10, 40, 15, 25]],
+                    axes: {data1: 'y', data2: 'y2'}
+                },
+                axis: {y2: {show: true}}
+            });
+
+            setTimeout(function(){
+                    chart4.axis.max(500);
+                }
+                ,1000);
+            setTimeout(function(){
+                    chart4.axis.min(-500);
+                }
+                ,2000);
+            setTimeout(function(){
+                    chart4.axis.max({y:600,y2:100});
+                }
+                ,3000);
+            setTimeout(function(){chart4.axis.min({y:-600,y2:-100});},4000);
+            setTimeout(function(){chart4.axis.range({max:1000,min:-1000});},5000);
+            setTimeout(function(){chart4.axis.range({max:{y:600,y2:100},min:{y:-100,y2:0}});},6000);
+            setTimeout(function(){chart4.axis.max({x:10});},7000);
+            setTimeout(function(){chart4.axis.min({x:-10});},8000);
+            setTimeout(function(){chart4.axis.range({max:{x:5},min:{x:0}});},9000);
+            $(".wrapper").on("resize",function(){
+                setTimeout(function(){
+                    chart4.resize();
+                },500);
+            });
+        }
+    */
+
+    function updatechart_trend(){
+        var chart=c3.generate({bindto:'#chart_trend',data:{columns:[
+            ['data1',30,300,100,400,150,300],
+            ['data2',300,130,350,130,300,80],
+            ['data3',200,230,450,530,200,180],
+            ['data4',400,530,750,230,300,480]
+        ],
+            type:'bar',
+            colors:
+                {data1:'#0fb0c0',data2:'#00c0ef',data3:'#0fb0c0'},
+            color:function(color,d){
+                return d.id&&d.id==='data3'?d3.rgb(color):color;
+            }
+        }
+        });
+        setTimeout(function(){chart.transform('area-spline','data1');},1000);
+        setTimeout(function(){chart.transform('area-spline','data2');},2000);
+        setTimeout(function(){chart.transform('bar');},3000);
+        setTimeout(function(){chart.transform('area-spline');},4000);
+    }
+
+    socket.on('update_kWh', function (data) {
+        var chart=c3.generate({bindto:'#chart_kWh',data:{
+            columns:[
+                ['Room 401',data['Rm_401']],
+                ['Room 402',data['Rm_402']],
+                ['Room 403',data['Rm_403']],
+                ['Room 404',data['Rm_404']],
+                ['Room 405',data['Rm_405']],
+                ['Room 406',data['Rm_406']]
+            ],
+            type:'bar',
+            colors:
+                {data1:'#0fb0c0',data2:'#00c0ef',data3:'#0fb0c0'},
+            color:function(color,d){
+                return d.id&&d.id==='data3'?d3.rgb(color):color;
+            }
+        }
+        });
+    });
+
+    updatechart_trend();
+
+//   flip js
+
+    $("#top_widget1, #top_widget2, #top_widget3, #top_widget4").flip({
+        axis: 'x',
+        trigger: 'hover'
+    });
+
+    var options = {
+        useEasing: true,
+        useGrouping: true,
+        decimal: '.',
+        prefix: '',
+        suffix: ''
+    };
+    socket.on('chart_status', function (data) {
+        var date = [];
+        var dataW = [], datakWh = [];
+        console.log(data);
+        for(var i = data.length - 1;i >= 0;i--){
+            date.push(data[i]['DATE']);
+            dataW.push(data[i]['W']);
+            datakWh.push(data[i]['kWh']);
+        }
+        Highcharts.chart('container', {
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: [{
+                categories: date,
+                crosshair: true
+            }],
+            yAxis: [{ // Primary yAxis
+                labels: {
+                    format: '{value} W',
+                    style: {
+                        color: Highcharts.getOptions().colors[2]
+                    }
+                },
+                title: {
+                    text: 'Power',
+                    style: {
+                        color: Highcharts.getOptions().colors[2]
+                    }
+                },
+                opposite: true
+
+            }, { // Secondary yAxis
+                gridLineWidth: 0,
+                title: {
+                    text: 'Kilowatt-Hours',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    format: '{value} kWh',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                }
+            }],
+            tooltip: {
+                shared: true
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                x: 80,
+                verticalAlign: 'top',
+                y: 55,
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+            },
+            series: [
+                {
+                    name: 'Power',
+                    type: 'column',
+                    data: dataW,
+                    tooltip: {
+                        valueSuffix: ' W'
+                    }
+                },
+                {
+                    name: 'Kilowatt-Hour',
+                    type: 'spline',
+                    yAxis: 1,
+                    data: datakWh,
+                    tooltip: {
+                        valueSuffix: ' kWh'
+                    }
+
+                }]
+        });
+    });
 
 
     function updatechartrt() {
@@ -400,95 +581,4 @@ $(document).ready(function() {
             }
         );
     }
-    function updatechart_status(){
-        var chart4=c3.generate({
-            bindto:'#chart4',
-            data:{columns:[['data1',30,200,100,400,150,250],
-                ['data2',50,20,10,40,15,25]],
-                axes:{data1:'y',data2:'y2'}},
-            axis:{y2:{show:true}}});
-        setTimeout(function(){
-                chart4.axis.max(500);
-            }
-            ,1000);
-        setTimeout(function(){
-                chart4.axis.min(-500);
-            }
-            ,2000);
-        setTimeout(function(){
-                chart4.axis.max({y:600,y2:100});
-            }
-            ,3000);
-        setTimeout(function(){chart4.axis.min({y:-600,y2:-100});},4000);
-        setTimeout(function(){chart4.axis.range({max:1000,min:-1000});},5000);
-        setTimeout(function(){chart4.axis.range({max:{y:600,y2:100},min:{y:-100,y2:0}});},6000);
-        setTimeout(function(){chart4.axis.max({x:10});},7000);
-        setTimeout(function(){chart4.axis.min({x:-10});},8000);
-        setTimeout(function(){chart4.axis.range({max:{x:5},min:{x:0}});},9000);
-        $(".wrapper").on("resize",function(){
-            setTimeout(function(){
-                chart4.resize();
-            },500);
-        });
-    }
-
-    function updatechart_trend(){
-        var chart=c3.generate({bindto:'#chart2',data:{columns:[
-            ['data1',30,300,100,400,150,300],
-            ['data2',300,130,350,130,300,80],
-            ['data3',200,230,450,530,200,180],
-            ['data4',400,530,750,230,300,480]
-        ],
-            type:'bar',
-            colors:
-                {data1:'#0fb0c0',data2:'#00c0ef',data3:'#0fb0c0'},
-            color:function(color,d){
-                return d.id&&d.id==='data3'?d3.rgb(color):color;
-            }
-        }
-        });
-        setTimeout(function(){chart.transform('area-spline','data1');},1000);
-        setTimeout(function(){chart.transform('area-spline','data2');},2000);
-        setTimeout(function(){chart.transform('bar');},3000);
-        setTimeout(function(){chart.transform('area-spline');},4000);
-    }
-
-    function updatechart_kWh() {
-        var chart=c3.generate({bindto:'#chart_kWh',data:{columns:[
-            ['data1',30,300,100,400,150,300],
-            ['data2',300,130,350,130,300,80],
-            ['data3',200,230,450,530,200,180],
-            ['data4',400,530,750,230,300,480]
-        ],
-            type:'bar',
-            colors:
-                {data1:'#0fb0c0',data2:'#00c0ef',data3:'#0fb0c0'},
-            color:function(color,d){
-                return d.id&&d.id==='data3'?d3.rgb(color):color;
-            }
-        }
-        });
-        setTimeout(function(){chart.transform('area-spline','data1');},1000);
-        setTimeout(function(){chart.transform('area-spline','data2');},2000);
-        setTimeout(function(){chart.transform('bar');},3000);
-    }
-    updatechart_status();
-    updatechart_trend();
-    updatechart_kWh();
-
-//   flip js
-
-    $("#top_widget1, #top_widget2, #top_widget3, #top_widget4").flip({
-        axis: 'x',
-        trigger: 'hover'
-    });
-
-    var options = {
-        useEasing: true,
-        useGrouping: true,
-        decimal: '.',
-        prefix: '',
-        suffix: ''
-    };
-
 });
