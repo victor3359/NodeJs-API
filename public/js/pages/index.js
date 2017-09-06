@@ -8,7 +8,7 @@ $(document).ready(function() {
     var chartdata = [];
 
     function controlalert(name, cmd){
-        iziToast.show({title:'Success',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
+        iziToast.show({title:'Command',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
     }
 
     var socket = io.connect('http://192.168.100.34:10000');
@@ -180,6 +180,7 @@ $(document).ready(function() {
             tooltipSuffix: ' W'
         });
     });
+
     socket.on('rm402_chart_init', function (data) {
         for(var i=1999;i >= 0;i--) {
             chartdata.push({
@@ -290,8 +291,25 @@ $(document).ready(function() {
         });
     });
 
+    socket.on('update_pie', function (data) {
+        var chart1=c3.generate({bindto:'#rmkWh_chart',data:{
+            columns:[['Room 401',data['Rm_401']],['Room 402',data['Rm_402']],['Room 403',data['Rm_403']]
+                ,['Room 404',data['Rm_404']],['Room 405',data['Rm_405']],['Room 406',data['Rm_406']]],type:'donut'},
+            donut:{title:"Fourth Floor"},
+            color:{pattern:['#00c0ef','#0fb0c0','#668cff','#ffb300','#69B3BF']}
+        });
+        setTimeout(function(){
+                chart1.load({
+                    columns:[["Room 401",data['Rm_401h']],["Room 402",data['Rm_402h']],["Room 403",data['Rm_403h']],
+                        ["Room 404",data['Rm_404h']],["Room 405",data['Rm_405h']],["Room 406",data['Rm_406h']]]
+                });
+            }
+            ,8000);
+    });
+
+
     function updatechartrt() {
-        AmCharts.makeChart("chartdiv",
+        AmCharts.makeChart("rt_chart",
             {
                 "type": "serial",
                 "categoryField": "date",
@@ -382,125 +400,81 @@ $(document).ready(function() {
             }
         );
     }
-
-
-    function Update() {
-        var url = "http://192.168.100.34:8080/r402";
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var json = JSON.parse(xhttp.responseText);
-
-
-                powerdata.push(data['kWh_tot']);
-                voltagedata.push(data['V_avg']);
-                amperedata.push(data['I_avg'] * 1000);
-                powerdata_c.push(data['kW_tot'] * 1000);
-
-
-                chartdata.push({
-                    hok_w: parseFloat(data['kW_tot'])*1000,
-                    hok_wc_l: data['wc_light_status'] * 3000,
-                    hok_wd_l: data['windows_light_status'] * 3000,
-                    hok_rm_c1: data['Room_lights_C1'],
-                    hok_rm_c2: data['Room_lights_C2'],
-                    hok_rm_c3: data['Room_lights_C3'],
-                    hok_bdl_c1: data['BedLeft_lights_C1'],
-                    hok_bdr_c2: data['BedRight_lights_C1'],
-                    date: data['datetime']
-                });
-
-                setText("widget_countup1", parseInt(data['kWh_tot']));
-                setText("widget_countup12", data['kWh_tot']);
-                setText("widget_countup2", parseInt(data['V_avg']));
-                setText("widget_countup22", data['V_avg']);
-                setText("widget_countup3", data['I_avg'] * 1000);
-                setText("widget_countup32", data['I_avg'] * 1000);
-                setText("widget_countup4", data['kW_tot'] * 1000);
-                setText("widget_countup42", data['kW_tot'] * 1000);
-
-                if(data['wc_light_status']){
-                    state('WC_Light_State', 1);
-                }else{
-                    state('WC_Light_State', 0);
-                }
-                if(data['windows_light_status']){
-                    state('WD_Light_State', 1);
-                }else{
-                    state('WD_Light_State', 0);
-                }
-                if(data['Room_lights_C1'] || data['Room_lights_C2'] || data['Room_light_C3']){
-                    state('RM_Light_State', 1);
-                }else{
-                    state('RM_Light_State', 0);
-                }
-                if(data['BedLeft_lights_C1'] || data['BedRight_lights_C2']){
-                    state('BD_Light_State', 1);
-                }else{
-                    state('BD_Light_State', 0);
-                }
-
-                if (powerdata.length > 10) powerdata.shift();
-                if (voltagedata.length > 10) voltagedata.shift();
-                if (amperedata.length > 10) amperedata.shift();
-                if (powerdata_c.length > 10) powerdata_c.shift();
-                chartdata.shift();
-
-                $("#visitsspark-chart").sparkline(powerdata, {
-                    type: 'line',
-                    width: '100%',
-                    height: '48',
-                    lineColor: '#4fb7fe',
-                    fillColor: '#e7f5ff',
-                    tooltipSuffix: ' kWh'
-                });
-                $('#salesspark-chart').sparkline(voltagedata,{
-                    type: 'line',
-                    width: "100%",
-                    height: '48',
-                    spotColor: '#f0ad4e',
-                    lineColor: '#EF6F6C',
-                    tooltipSuffix: ' V'
-                });
-                $('#mousespeed').sparkline(amperedata, {
-                    type: 'line',
-                    height: "48",
-                    width: "100%",
-                    lineColor: '#4fb7fe',
-                    fillColor: '#e7f5ff',
-                    tooltipSuffix: ' mA'
-                });
-                $("#rating").sparkline(powerdata_c, {
-                    type: 'line',
-                    width: "100%",
-                    height: '48',
-                    spotColor: '#FF00FF',
-                    lineColor: '#DF0F7C',
-                    tooltipSuffix: ' W'
-                });
+    function updatechart_status(){
+        var chart4=c3.generate({
+            bindto:'#chart4',
+            data:{columns:[['data1',30,200,100,400,150,250],
+                ['data2',50,20,10,40,15,25]],
+                axes:{data1:'y',data2:'y2'}},
+            axis:{y2:{show:true}}});
+        setTimeout(function(){
+                chart4.axis.max(500);
             }
-        };
-        xhttp.open("GET", url, true);
-        xhttp.send(null);
-    }
-    updatechartpie();
-
-    function updatechartpie() {
-        var chart1=c3.generate({bindto:'#chart1',data:{
-            columns:[['data1',12],['data2',108]],type:'donut'},
-            donut:{title:"Iris Petal Width"},
-            color:{pattern:['#00c0ef','#0fb0c0','#668cff','#ffb300','#69B3BF']}
+            ,1000);
+        setTimeout(function(){
+                chart4.axis.min(-500);
+            }
+            ,2000);
+        setTimeout(function(){
+                chart4.axis.max({y:600,y2:100});
+            }
+            ,3000);
+        setTimeout(function(){chart4.axis.min({y:-600,y2:-100});},4000);
+        setTimeout(function(){chart4.axis.range({max:1000,min:-1000});},5000);
+        setTimeout(function(){chart4.axis.range({max:{y:600,y2:100},min:{y:-100,y2:0}});},6000);
+        setTimeout(function(){chart4.axis.max({x:10});},7000);
+        setTimeout(function(){chart4.axis.min({x:-10});},8000);
+        setTimeout(function(){chart4.axis.range({max:{x:5},min:{x:0}});},9000);
+        $(".wrapper").on("resize",function(){
+            setTimeout(function(){
+                chart4.resize();
+            },500);
         });
-        setTimeout(function(){chart1.load({
-            columns:[["setosa",0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1,0.2,0.2,0.1,0.1,0.2,0.4,0.4,0.3,0.3
-                ,0.3,0.2,0.4,0.2,0.5,0.2,0.2,0.4,0.2,0.2,0.2,0.2,0.4,0.1,0.2,0.2,0.2,0.2,0.1,0.2,0.2,0.3,0.3,0.2,
-                0.6,0.4,0.3,0.2,0.2,0.2,0.2],["versicolor",1.4,1.5,1.5,1.3,1.5,1.3,1.6,1.0,1.3,1.4,1.0,1.5,1.0,1.4,1.3,1.4,1.5,
-                1.0,1.5,1.1,1.8,1.3,1.5,1.2,1.3,1.4,1.4,1.7,1.5,1.0,1.1,1.0,1.2,1.6,1.5,1.6,1.5,1.3,1.3,1.3,1.2,1.4,1.2,1.0,1.3,
-                1.2,1.3,1.3,1.1,1.3],["virginica",2.5,1.9,2.1,1.8,2.2,2.1,1.7,1.8,1.8,2.5,2.0,1.9,2.1,2.0,2.4,2.3,1.8,2.2,2.3,1.5,
-                2.3,2.0,2.0,1.8,2.1,1.8,1.8,1.8,2.1,1.6,1.9,2.0,2.2,1.5,1.4,2.3,2.4,1.8,1.8,2.1,2.4,2.3,1.9,2.3,2.5,2.3,1.9,2.0,2.3,
-                1.8]]});},1500);
-        setTimeout(function(){chart1.unload({ids:'data1'});chart1.unload({ids:'data2'});},5000);
     }
+
+    function updatechart_trend(){
+        var chart=c3.generate({bindto:'#chart2',data:{columns:[
+            ['data1',30,300,100,400,150,300],
+            ['data2',300,130,350,130,300,80],
+            ['data3',200,230,450,530,200,180],
+            ['data4',400,530,750,230,300,480]
+        ],
+            type:'bar',
+            colors:
+                {data1:'#0fb0c0',data2:'#00c0ef',data3:'#0fb0c0'},
+            color:function(color,d){
+                return d.id&&d.id==='data3'?d3.rgb(color):color;
+            }
+        }
+        });
+        setTimeout(function(){chart.transform('area-spline','data1');},1000);
+        setTimeout(function(){chart.transform('area-spline','data2');},2000);
+        setTimeout(function(){chart.transform('bar');},3000);
+        setTimeout(function(){chart.transform('area-spline');},4000);
+    }
+
+    function updatechart_kWh() {
+        var chart=c3.generate({bindto:'#chart_kWh',data:{columns:[
+            ['data1',30,300,100,400,150,300],
+            ['data2',300,130,350,130,300,80],
+            ['data3',200,230,450,530,200,180],
+            ['data4',400,530,750,230,300,480]
+        ],
+            type:'bar',
+            colors:
+                {data1:'#0fb0c0',data2:'#00c0ef',data3:'#0fb0c0'},
+            color:function(color,d){
+                return d.id&&d.id==='data3'?d3.rgb(color):color;
+            }
+        }
+        });
+        setTimeout(function(){chart.transform('area-spline','data1');},1000);
+        setTimeout(function(){chart.transform('area-spline','data2');},2000);
+        setTimeout(function(){chart.transform('bar');},3000);
+    }
+    updatechart_status();
+    updatechart_trend();
+    updatechart_kWh();
 
 //   flip js
 
@@ -508,7 +482,6 @@ $(document).ready(function() {
         axis: 'x',
         trigger: 'hover'
     });
-
 
     var options = {
         useEasing: true,

@@ -285,7 +285,7 @@ z-index: 999999">
                                                 <span class="card-title">動態即時圖表</span>
                                             </div>
                                             <div class="card-block">
-                                                <div class="mb-md m-t-15" style="width:100%;height:320px;" id="chartdiv"></div>
+                                                <div class="mb-md m-t-15" style="width:100%;height:320px;" id="rt_chart"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -305,9 +305,7 @@ z-index: 999999">
                                                 <span class="card-title">趨勢分析圖表</span>
                                             </div>
                                             <div class="card-block m-t-35">
-                                                <div id="chart2"></div>
-                                                <div id="slider2"></div>
-                                                <div id="legend_chart2"></div>
+                                                <div class="mb-md m-t-15" style="height:320px;" id="chart2"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -336,20 +334,33 @@ z-index: 999999">
                             </div>
                         </div>
                     </div>
+                    <div class="row">
 
                     <div class="row col-lg-5">
                         <div class="col-lg-12">
                             <div class="card m-t-35">
                                 <div class="card-header bg-white">
-                                    Donut Chart
+                                    樓層用電比例 （kWh）
                                 </div>
                                 <div class="card-block m-t-35">
-                                    <div id="chart1"></div>
+                                    <div id="rmkWh_chart"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    <div class="row col-lg-7">
+                        <div class="col-lg-12">
+                            <div class="card m-t-35">
+                                <div class="card-header bg-white">
+                                    即時用電分析 （kWh）
+                                </div>
+                                <div class="card-block m-t-35">
+                                    <div class="mb-md m-t-15" id="chart_kWh"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
                     <div class="row">
                         <div class="col-lg-7 col-12 m-t-35">
                             <div class="row">
@@ -479,29 +490,21 @@ z-index: 999999">
 
 <script type="text/javascript" src="js/pages/index.js"></script>
 
-
-
 <!-- plugin script -->
 <script type="text/javascript" src="vendors/raphael/js/raphael-min.js.pagespeed.jm.mdymR_0MgC.js"></script>
 <script type="text/javascript" src="vendors/justgage/js/justgage.js.pagespeed.jm.AXTAmfTJl6.js"></script>
 <script type="text/javascript" src="vendors/d3/js/d3.min.js.pagespeed.jm.hcZ4wO0QRk.js"></script>
 <script type="text/javascript" src="vendors/c3/js/c3.min.js.pagespeed.ce.nEKX37kL43.js"></script>
-<!-- end of plugin script -->
+
+
 
 <!-- Plugin scripts -->
 <script type="text/javascript" src="vendors/izitoast/js/iziToast.min.js.pagespeed.ce.yubeP2Xtg-.js"></script>
-<!--
 <script type="text/javascript" src="vendors/raphael/js/raphael-min.js.pagespeed.jm.mdymR_0MgC.js"></script>
 <script type="text/javascript" src="vendors/justgage/js/justgage.js.pagespeed.jm.AXTAmfTJl6.js"></script>
 <script type="text/javascript" src="vendors/d3/js/d3.min.js.pagespeed.jm.hcZ4wO0QRk.js"></script>
 <script type="text/javascript" src="vendors/c3/js/c3.min.js.pagespeed.ce.nEKX37kL43.js"></script>
-<!--
-<script type="text/javascript" src="vendors/rickshaw/js/rickshaw.min.js.pagespeed.jm.zE-3sN3knm.js"></script>
 
-
-<script type="text/javascript" src="js/pages/richshaw_chart.js.pagespeed.jm.CY8gyLdvcb.js"></script>
-
-<!--Page level scripts-->
 
 <script src="vendors/javascript_p_notify.js"></script>
 <script>eval(mod_pagespeed_PgBWTwAB3I);</script>
@@ -514,8 +517,10 @@ z-index: 999999">
 <script>eval(mod_pagespeed_BityH3aJ10);</script>
 <script>eval(mod_pagespeed_WX_WC_ZJ7M);</script>
 <script>eval(mod_pagespeed_0hM1ZEEq1u);</script>
-<script type="text/javascript" src="js/pages/p_notify.js.pagespeed.jm.E2cU5JtMgK.js"></script>
 <!--End of plugin scripts-->
+
+<script type="text/javascript" src="js/pages/p_notify.js.pagespeed.jm.E2cU5JtMgK.js"></script>
+
 </body>
 
 <!-- Mirrored from demo.lorvent.com/demo_admire/admire_html/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 01 Sep 2017 07:01:26 GMT -->
