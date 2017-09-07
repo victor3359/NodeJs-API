@@ -191,7 +191,7 @@ $(document).ready(function() {
                 hok_rm_c2: data[i]['RMC2'],
                 hok_rm_c3: data[i]['RMC3'],
                 hok_bdl_c1: data[i]['BDLC1'],
-                hok_bdr_c2: data[i]['BDRC1'],
+                hok_bdr_c1: data[i]['BDRC1'],
                 date: data[i]['TIME']
             });
         }
@@ -207,7 +207,7 @@ $(document).ready(function() {
                 hok_rm_c2: data[i]['RMC2'],
                 hok_rm_c3: data[i]['RMC3'],
                 hok_bdl_c1: data[i]['BDLC1'],
-                hok_bdr_c2: data[i]['BDRC1'],
+                hok_bdr_c1: data[i]['BDRC1'],
                 date: data[i]['TIME']
             });
         }
@@ -428,13 +428,13 @@ $(document).ready(function() {
                 labels: {
                     format: '{value} W',
                     style: {
-                        color: Highcharts.getOptions().colors[2]
+                        color: Highcharts.getOptions().colors[0]
                     }
                 },
                 title: {
                     text: 'Power',
                     style: {
-                        color: Highcharts.getOptions().colors[2]
+                        color: Highcharts.getOptions().colors[0]
                     }
                 },
                 opposite: true
@@ -444,13 +444,13 @@ $(document).ready(function() {
                 title: {
                     text: 'Kilowatt-Hours',
                     style: {
-                        color: Highcharts.getOptions().colors[0]
+                        color: Highcharts.getOptions().colors[1]
                     }
                 },
                 labels: {
                     format: '{value} kWh',
                     style: {
-                        color: Highcharts.getOptions().colors[0]
+                        color: Highcharts.getOptions().colors[1]
                     }
                 }
             }],
