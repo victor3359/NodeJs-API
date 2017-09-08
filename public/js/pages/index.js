@@ -6,12 +6,13 @@ $(document).ready(function() {
     var amperedata = [];
     var powerdata_c = [];
     var chartdata = [];
+    var chart_trenddata = [];
 
     function controlalert(name, cmd){
         iziToast.show({title:'Command',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
     }
 
-    var socket = io.connect('http://192.168.100.34:10000');
+    var socket = io.connect('http://192.168.200.20:10000');
 
     socket.emit('done', 0);
     //Controller Def Start
@@ -182,7 +183,7 @@ $(document).ready(function() {
     });
 
     socket.on('rm402_chart_init', function (data) {
-        for(var i=1999;i >= 0;i--) {
+        for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 hok_w: parseFloat(data[i]['kW']) * 1000,
                 hok_wc_l: data[i]['WCL'] * 3000,
@@ -198,7 +199,7 @@ $(document).ready(function() {
         updatechartrt();
     });
     socket.on('rm402_chart_data', function (data) {
-        for(var i=59;i >= 0;i--) {
+        for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 hok_w: parseFloat(data[i]['kW']) * 1000,
                 hok_wc_l: data[i]['WCL'] * 3000,
@@ -213,6 +214,7 @@ $(document).ready(function() {
         }
         updatechartrt();
     });
+
 
     socket.on('rm402_data', function (data) {
         powerdata.push(data['kWh']);
@@ -306,64 +308,53 @@ $(document).ready(function() {
             }
             ,8000);
     });
-    /*
-        function updatechart_status() {
-            var chart4 = c3.generate({
-                bindto: '#chart_status',
-                data: {
-                    columns: [['Kilowatt-Hour', 30, 200, 100, 400, 150, 250],
-                        ['Power-Watt', 50, 20, 10, 40, 15, 25]],
-                    axes: {data1: 'y', data2: 'y2'}
-                },
-                axis: {y2: {show: true}}
-            });
 
-            setTimeout(function(){
-                    chart4.axis.max(500);
-                }
-                ,1000);
-            setTimeout(function(){
-                    chart4.axis.min(-500);
-                }
-                ,2000);
-            setTimeout(function(){
-                    chart4.axis.max({y:600,y2:100});
-                }
-                ,3000);
-            setTimeout(function(){chart4.axis.min({y:-600,y2:-100});},4000);
-            setTimeout(function(){chart4.axis.range({max:1000,min:-1000});},5000);
-            setTimeout(function(){chart4.axis.range({max:{y:600,y2:100},min:{y:-100,y2:0}});},6000);
-            setTimeout(function(){chart4.axis.max({x:10});},7000);
-            setTimeout(function(){chart4.axis.min({x:-10});},8000);
-            setTimeout(function(){chart4.axis.range({max:{x:5},min:{x:0}});},9000);
-            $(".wrapper").on("resize",function(){
-                setTimeout(function(){
-                    chart4.resize();
-                },500);
-            });
-        }
-    */
+    socket.on('chart_trend', function (data) {
+        console.log(data);
+        var chart = AmCharts.makeChart( "chart_trend2", {
+            "type": "serial",
+            "addClassNames": true,
+            "theme": "light",
+            "autoMargins": false,
+            "marginLeft": 30,
+            "marginRight": 8,
+            "marginTop": 10,
+            "marginBottom": 26,
+            "balloon": {
+                "adjustBorderColor": false,
+                "horizontalPadding": 10,
+                "verticalPadding": 8,
+                "color": "#ffffff"
+            },
 
-    function updatechart_trend(){
-        var chart=c3.generate({bindto:'#chart_trend',data:{columns:[
-            ['data1',30,300,100,400,150,300],
-            ['data2',300,130,350,130,300,80],
-            ['data3',200,230,450,530,200,180],
-            ['data4',400,530,750,230,300,480]
-        ],
-            type:'bar',
-            colors:
-                {data1:'#0fb0c0',data2:'#00c0ef',data3:'#0fb0c0'},
-            color:function(color,d){
-                return d.id&&d.id==='data3'?d3.rgb(color):color;
+            "dataProvider": data
+            ,
+            "valueAxes": [ {
+                "axisAlpha": 0,
+                "position": "left"
+            } ],
+            "startDuration": 1,
+            "graphs": [ {
+                "alphaField": "alpha",
+                "balloonText": "<span style='font-size:12px;'>[[title]] 在 [[category]]:<br><span style='font-size:20px;'>[[value]]</span> [[additional]]</span>",
+                "fillAlphas": 1,
+                "title": "耗電量",
+                "type": "column",
+                "valueField": "kWh",
+                "dashLengthField": "dashLengthColumn"
+            }],
+            "categoryField": "TIME",
+            "categoryAxis": {
+                "gridPosition": "start",
+                "axisAlpha": 0,
+                "tickLength": 0
+            },
+            "export": {
+                "enabled": true
             }
-        }
-        });
-        setTimeout(function(){chart.transform('area-spline','data1');},1000);
-        setTimeout(function(){chart.transform('area-spline','data2');},2000);
-        setTimeout(function(){chart.transform('bar');},3000);
-        setTimeout(function(){chart.transform('area-spline');},4000);
-    }
+        } );
+    });
+
 
     socket.on('update_kWh', function (data) {
         var chart=c3.generate({bindto:'#chart_kWh',data:{
@@ -385,7 +376,6 @@ $(document).ready(function() {
         });
     });
 
-    updatechart_trend();
 
 //   flip js
 
@@ -401,12 +391,12 @@ $(document).ready(function() {
         prefix: '',
         suffix: ''
     };
+
     socket.on('chart_status', function (data) {
         var date = [];
         var dataW = [], datakWh = [];
-        console.log(data);
         for(var i = data.length - 1;i >= 0;i--){
-            date.push(data[i]['DATE']);
+            date.push(data[i]['TIME']);
             dataW.push(data[i]['W']);
             datakWh.push(data[i]['kWh']);
         }
@@ -460,9 +450,9 @@ $(document).ready(function() {
             legend: {
                 layout: 'vertical',
                 align: 'left',
-                x: 80,
+                x: 70,
                 verticalAlign: 'top',
-                y: 55,
+                y: 0,
                 floating: true,
                 backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
             },
@@ -488,7 +478,6 @@ $(document).ready(function() {
         });
     });
 
-
     function updatechartrt() {
         AmCharts.makeChart("rt_chart",
             {
@@ -509,49 +498,49 @@ $(document).ready(function() {
                 "trendLines": [],
                 "graphs": [
                     {
-                        "bullet": "round",
+                        "bullet": "none",
                         "id": "AmGraph-1",
                         "title": "Power",
                         "valueField": "hok_w"
                     },
                     {
-                        "bullet": "round",
+                        "bullet": "none",
                         "id": "AmGraph-2",
                         "title": "W.C. Light",
                         "valueField": "hok_wc_l"
                     },
                     {
-                        "bullet": "round",
+                        "bullet": "none",
                         "id": "AmGraph-3",
                         "title": "Window Light",
                         "valueField": "hok_wd_l"
                     },
                     {
-                        "bullet": "round",
+                        "bullet": "none",
                         "id": "AmGraph-4",
                         "title": "Room_C1 Light",
                         "valueField": "hok_rm_c1"
                     },
                     {
-                        "bullet": "round",
+                        "bullet": "none",
                         "id": "AmGraph-5",
                         "title": "Room_C2 Light",
                         "valueField": "hok_rm_c2"
                     },
                     {
-                        "bullet": "round",
+                        "bullet": "none",
                         "id": "AmGraph-6",
                         "title": "Room_C3 Light",
                         "valueField": "hok_rm_c3"
                     },
                     {
-                        "bullet": "round",
+                        "bullet": "none",
                         "id": "AmGraph-7",
                         "title": "BedLeft_C1 Light",
                         "valueField": "hok_bdl_c1"
                     },
                     {
-                        "bullet": "round",
+                        "bullet": "none",
                         "id": "AmGraph-8",
                         "title": "BedRight_C1 Light",
                         "valueField": "hok_bdr_c1"

@@ -91,6 +91,7 @@ InitInterval();
 function Initerr() {
     mongodb.connect(url, function (err, db) {
         if(err)throw err;
+        //todo: Init ErrorEvent Data
         db.collection('ErrorEven_log').find().toArray(function (mongoError, objects) {
             if(mongoError)throw mongoError;
             error_count = objects.length;
@@ -103,11 +104,11 @@ function Initerr() {
 
 
 function Initchart() {
-    var data = [];
     mongodb.connect(url, function (err, db) {
-        db.collection('Device_info').find({Room_num:{$gt:400}}).sort({_id:-1}).limit(6).toArray(function (mongoError, objects) {
-            if(mongoError) throw mongoError;
-            objects.sort(function (a ,b) {
+        //todo: Fourth Floor Circle Chart
+        db.collection('Device_info').find({Room_num: {$gt: 400}}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
+            if (mongoError) throw mongoError;
+            objects.sort(function (a, b) {
                 return a.Room_num - b.Room_num;
             });
             var rmkWh = {
@@ -126,9 +127,10 @@ function Initchart() {
             };
             socket.emit('update_pie', rmkWh);
         });
-        db.collection('Device_info').find({Room_num:{$gt:400}}).sort({_id:-1}).limit(6).toArray(function (mongoError, objects) {
-            if(mongoError) throw mongoError;
-            objects.sort(function (a ,b) {
+        //todo: Fourth Floor Bar Chart
+        db.collection('Device_info').find({Room_num: {$gt: 400}}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
+            if (mongoError) throw mongoError;
+            objects.sort(function (a, b) {
                 return a.Room_num - b.Room_num;
             });
             var rmkWh = {
@@ -142,47 +144,121 @@ function Initchart() {
             socket.emit('update_kWh', rmkWh);
         });
 
-        db.collection('Device_info').find({Room_num: 402}).sort({_id: -1}).limit(2000).toArray(function (mongoError, objects) {
+
+        //todo: Room 402 - RealTime Chart
+        db.collection('Device_info').aggregate([{$match: {Room_num:402}},
+            { "$group": {
+                "_id": {
+                    "year": { "$year": "$sysdatetime" },
+                    "dayOfYear": { "$dayOfYear": "$sysdatetime" },
+                    "hour": { "$hour": "$sysdatetime" },
+                    "interval": {
+                        "$subtract": [
+                            { "$minute": "$sysdatetime" },
+                            { "$mod": [{ "$minute": "$sysdatetime"}, 1] }
+                        ]
+                    }
+                },
+                datetime: { "$first": "$sysdatetime" },
+                data: { $first : "$$ROOT" }
+            }
+            },
+            { $sort : { datetime : -1}}, {$limit : 1000}
+        ],{allowDiskUse:true}).toArray(function (mongoError, objects) {
             if (mongoError) throw mongoError;
-            for (var i = 0; i < 2000; i++) {
-                data.push({
-                    kWh: objects[i]['kWh_tot'],
-                    AvgV: objects[i]['V_avg'],
-                    AvgI: objects[i]['I_avg'],
-                    kW: objects[i]['kW_tot'],
-                    WCL: objects[i]['wc_light_status'],
-                    WDL: objects[i]['windows_light_status'],
-                    RMC1: objects[i]['Room_lights_C1'],
-                    RMC2: objects[i]['Room_lights_C2'],
-                    RMC3: objects[i]['Room_lights_C3'],
-                    BDLC1: objects[i]['BedLeft_lights_C1'],
-                    BDRC1: objects[i]['BedRight_lights_C1'],
-                    TIME: date.format(objects[i]['sysdatetime'], 'YYYY-MM-DD HH:mm:ss')
+            var realtimedata = [];
+            for(var i=0;i<objects.length;i++) {
+                realtimedata.push({
+                    kW: objects[i]['data']['kW_tot'],
+                    WCL: objects[i]['data']['wc_light_status'],
+                    WDL: objects[i]['data']['windows_light_status'],
+                    RMC1: objects[i]['data']['Room_lights_C1'],
+                    RMC2: objects[i]['data']['Room_lights_C2'],
+                    RMC3: objects[i]['data']['Room_lights_C3'],
+                    BDLC1: objects[i]['data']['BedLeft_lights_C1'],
+                    BDRC1: objects[i]['data']['BedRight_lights_C1'],
+                    TIME: date.format(objects[i]['data']['sysdatetime'], 'YYYY-MM-DD HH:mm:ss')
                 });
             }
-            socket.emit('rm402_chart_init', data);
+            socket.emit('rm402_chart_init', realtimedata);
         });
 
-        db.collection('Device_info').find({Room_num:402}).sort({_id:-1}).limit(10001).toArray(function (mongoError, objects) {
+        //todo: Room 402 - Status Chart
+        db.collection('Device_info').aggregate([{$match: {Room_num:402}},
+            { "$group": {
+                "_id": {
+                    "year": { "$year": "$sysdatetime" },
+                    "dayOfYear": { "$dayOfYear": "$sysdatetime" },
+                    "interval": {
+                        "$subtract": [
+                            { "$hour": "$sysdatetime" },
+                            { "$mod": [{ "$hour": "$sysdatetime"}, 1] }
+                        ]
+                    }
+                },
+                datetime: { "$first": "$sysdatetime" },
+                data: { $first : "$$ROOT" }
+            }
+            },
+            { $sort : { datetime : -1 } }
+        ],{allowDiskUse:true}).toArray(function (mongoError, objects) {
             if(mongoError) throw mongoError;
             var data = [];
-            for(var i = 0;i < objects.length;i++){
-                if(i%1000 == 0) {
-                    data.push({
-                        kWh: objects[i]['kWh_tot'],
-                        W: objects[i]['kW_tot'] * 1000,
-                        DATE: date.format(objects[i]['sysdatetime'], 'HH:mm:ss')
-                    });
-                }
+            for(var i=0;i<objects.length;i++){
+                data.push({
+                    kWh: objects[i]['data']['kWh_tot'],
+                    W: objects[i]['data']['kW_tot'] * 1000,
+                    TIME: date.format(objects[i]['data']['sysdatetime'], 'MM-DD HH:mm')
+                });
             }
+            data.sort(function (a, b) {
+                return b.kWh - a.kWh;
+            });
             socket.emit('chart_status', data);
-            db.close();
+        });
+        //todo: Room 402 - Trend Chart
+        var data = [];
+        var tmp = [];
+        db.collection('Device_info').aggregate([{$match: {Room_num:402}},
+            { "$group": {
+                "_id": {
+                    "year": { "$year": "$sysdatetime" },
+                    "interval": {
+                        "$subtract": [
+                            { "$dayOfYear": "$sysdatetime" },
+                            { "$mod": [{ "$dayOfYear": "$sysdatetime"}, 1] }
+                        ]
+                    }
+                },
+                datetime: { "$first": "$sysdatetime" },
+                data: { $first : "$$ROOT" }
+            }
+            },
+            { $sort : { datetime : -1 } }
+        ],{allowDiskUse:true}).toArray(function (mongoError,objects) {
+            for(var i=0;i<objects.length;i++){
+                data.push({
+                    kWh: objects[i]['data']['kWh_tot'],
+                    TIME: date.format(objects[i]['data']['sysdatetime'], 'MM-DD')
+                });
+            }
+            data.sort(function (a, b) {
+                return a.kWh - b.kWh;
+            });
+            for(var i=1;i<data.length;i++){
+                tmp.push({
+                    kWh: data[i]['kWh'] - data[i-1]['kWh'],
+                    TIME: data[i-1]['TIME']
+                });
+            }
+            socket.emit('chart_trend', tmp);
         });
     });
 }
 
 function Initdata(){
     mongodb.connect(url, function (err, db) {
+        //todo: Init Room 402 Data
         db.collection('Device_info').find({Room_num: 402}).sort({_id: -1}).limit(1).toArray(function (mongoError, objects) {
             if (mongoError) throw mongoError;
             var data = {
@@ -206,28 +282,27 @@ function Initdata(){
 
 function updatechart() {
     mongodb.connect(url, function (err, db) {
+        //todo: Update Room 402 - RealTime Chart
         db.collection('Device_info').find({Room_num: 402}).sort({_id: -1}).limit(60).toArray(function (mongoError, objects) {
             if (mongoError) throw mongoError;
-            var data = [];
-            for(var i=0;i<60;i++) {
-                data.push({
-                    kWh: objects[i]['kWh_tot'],
-                    AvgV: objects[i]['V_avg'],
-                    AvgI: objects[i]['I_avg'],
-                    kW: objects[i]['kW_tot'],
-                    WCL: objects[i]['wc_light_status'],
-                    WDL: objects[i]['windows_light_status'],
-                    RMC1: objects[i]['Room_lights_C1'],
-                    RMC2: objects[i]['Room_lights_C2'],
-                    RMC3: objects[i]['Room_lights_C3'],
-                    BDLC1: objects[i]['BedLeft_lights_C1'],
-                    BDRC1: objects[i]['BedRight_lights_C1'],
-                    TIME: date.format(objects[i]['sysdatetime'], 'YYYY/MM/DD HH:mm:ss')
-                });
-            }
+            var data = {
+                kWh: objects[0]['kWh_tot'],
+                AvgV: objects[0]['V_avg'],
+                AvgI: objects[0]['I_avg'],
+                kW: objects[0]['kW_tot'],
+                WCL: objects[0]['wc_light_status'],
+                WDL: objects[0]['windows_light_status'],
+                RMC1: objects[0]['Room_lights_C1'],
+                RMC2: objects[0]['Room_lights_C2'],
+                RMC3: objects[0]['Room_lights_C3'],
+                BDLC1: objects[0]['BedLeft_lights_C1'],
+                BDRC1: objects[0]['BedRight_lights_C1'],
+                TIME: date.format(objects[0]['sysdatetime'], 'YYYY/MM/DD HH:mm:ss')
+            };
             socket.emit('rm402_chart_data', data);
             db.close();
         });
+        //todo: Update Fourth Floor Bar Chart
         db.collection('Device_info').find({Room_num:{$gt:400}}).sort({_id:-1}).limit(6).toArray(function (mongoError, objects) {
             if(mongoError) throw mongoError;
             objects.sort(function (a ,b) {
@@ -249,6 +324,7 @@ function updatechart() {
 
 function updatedata() {
     mongodb.connect(url, function (err, db) {
+        //todo: Update Room 402 Data
         db.collection('Device_info').find({Room_num: 402}).sort({_id: -1}).limit(1).toArray(function (mongoError, objects) {
             if (mongoError) throw mongoError;
             var data = {
@@ -264,14 +340,15 @@ function updatedata() {
                 BDLC1: objects[0]['BedLeft_lights_C1'],
                 BDRC1: objects[0]['BedRight_lights_C1']
             };
-            db.close();
             socket.emit('rm402_data', data);
+            db.close();
         });
+        //todo: Update ErrorEvent Data
         db.collection('ErrorEven_log').find().toArray(function (mongoError, objects) {
             if (mongoError) throw mongoError;
-            if (error_count > objects.length) {
+            if (objects.length > error_count) {
                 var tmp = [];
-                for(var i=0;i<error_count - objects.length;i++){
+                for(var i=0;i< objects.length - error_count ;i++){
                     tmp[i] = objects[i];
                 }
                 socket.emit('error_info', tmp);

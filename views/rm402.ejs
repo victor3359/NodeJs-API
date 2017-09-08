@@ -86,11 +86,114 @@ z-index: 999999">
                         <span class="link-title menu_hide">&nbsp; Ho̍k Rooms</span>
                         <span class="fa arrow menu_hide"></span>
                     </a>
-                    <ul>
-                        <li class="active">
-                            <a href="rm402">
-                                <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 402
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="javascript:;">
+                                <i class="fa fa-angle-right"></i> &nbsp; Second Floor
+                                <span class="fa arrow"></span>
                             </a>
+                            <ul class="sub-menu sub-submenu">
+                                <li>
+                                    <a href="rm201">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 201
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm202">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 202
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm203">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 203
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm204">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 204
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm205">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 205
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="javascript:;">
+                                <i class="fa fa-angle-right"></i> &nbsp; Third Floor
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="sub-menu sub-submenu">
+                                <li>
+                                    <a href="rm301">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 301
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm302">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 302
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm303">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 303
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm304">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 304
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm305">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 305
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li class="active">
+                            <a href="javascript:;">
+                                <i class="fa fa-angle-right"></i> &nbsp; Fourth Floor
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="sub-menu sub-submenu">
+                                <li>
+                                    <a href="rm401">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 401
+                                    </a>
+                                </li>
+                                <li class="active">
+                                    <a href="rm402">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 402
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm403">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 403
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm404">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 404
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm405">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 405
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm406">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 406
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
@@ -306,6 +409,7 @@ z-index: 999999">
                                                 <span class="card-title">每日用電分析</span>
                                             </div>
                                             <div class="card-block m-t-35">
+                                                <div class="mb-md m-t-15" style="width:100%;height:290px;" id="chart_trend2"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -336,30 +440,30 @@ z-index: 999999">
                     </div>
                     <div class="row">
 
-                    <div class="row col-lg-5">
-                        <div class="col-lg-12">
-                            <div class="card m-t-35">
-                                <div class="card-header bg-white">
-                                    樓層用電比例 （kWh）
-                                </div>
-                                <div class="card-block m-t-35">
-                                    <div id="rmkWh_chart"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row col-lg-7">
-                        <div class="col-lg-12">
-                            <div class="card m-t-35">
-                                <div class="card-header bg-white">
-                                    即時用電分析 （W）
-                                </div>
-                                <div class="card-block m-t-35">
-                                    <div class="mb-md m-t-15" id="chart_kWh"></div>
+                        <div class="row col-lg-5">
+                            <div class="col-lg-12">
+                                <div class="card m-t-35">
+                                    <div class="card-header bg-white">
+                                        樓層用電比例 （kWh）
+                                    </div>
+                                    <div class="card-block m-t-35">
+                                        <div id="rmkWh_chart"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="row col-lg-7">
+                            <div class="col-lg-12">
+                                <div class="card m-t-35">
+                                    <div class="card-header bg-white">
+                                        即時用電分析 （W）
+                                    </div>
+                                    <div class="card-block m-t-35">
+                                        <div class="mb-md m-t-15" id="chart_kWh"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-7 col-12 m-t-35">
@@ -485,7 +589,6 @@ z-index: 999999">
 <script src="javascripts/amcharts.js"></script>
 <script src="javascripts/amstock.js"></script>
 <script src="javascripts/serial.js"></script>
-<script src="javascripts/export.min.js"></script>
 <script src="javascripts/highcharts.js"></script>
 <script src="javascripts/exporting.js"></script>
 <link rel="stylesheet" href="css_new/export.css" type="text/css" media="all" />
