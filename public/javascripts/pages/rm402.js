@@ -12,7 +12,7 @@ $(document).ready(function() {
         iziToast.show({title:'Command',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
     }
 
-    var socket = io.connect('http://192.168.200.20:10000');
+    var socket = io.connect('http://localhost:10000');
 
     socket.emit('done', 0);
     //Controller Def Start
