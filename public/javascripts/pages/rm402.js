@@ -501,49 +501,57 @@ $(document).ready(function() {
                         "bullet": "none",
                         "id": "AmGraph-1",
                         "title": "Power",
-                        "valueField": "hok_w"
+                        "valueField": "hok_w",
+                        "lineThickness" : 5
                     },
                     {
                         "bullet": "none",
                         "id": "AmGraph-2",
                         "title": "W.C. Light",
-                        "valueField": "hok_wc_l"
+                        "valueField": "hok_wc_l",
+                        "lineThickness" : 5
                     },
                     {
                         "bullet": "none",
                         "id": "AmGraph-3",
                         "title": "Window Light",
-                        "valueField": "hok_wd_l"
+                        "valueField": "hok_wd_l",
+                        "lineThickness" : 5
                     },
                     {
                         "bullet": "none",
                         "id": "AmGraph-4",
                         "title": "Room_C1 Light",
-                        "valueField": "hok_rm_c1"
+                        "valueField": "hok_rm_c1",
+                        "lineThickness" : 5
                     },
                     {
                         "bullet": "none",
                         "id": "AmGraph-5",
                         "title": "Room_C2 Light",
-                        "valueField": "hok_rm_c2"
+                        "valueField": "hok_rm_c2",
+                        "lineThickness" : 5
                     },
                     {
                         "bullet": "none",
                         "id": "AmGraph-6",
                         "title": "Room_C3 Light",
-                        "valueField": "hok_rm_c3"
+                        "valueField": "hok_rm_c3",
+                        "lineThickness" : 5
                     },
                     {
                         "bullet": "none",
                         "id": "AmGraph-7",
                         "title": "BedLeft_C1 Light",
-                        "valueField": "hok_bdl_c1"
+                        "valueField": "hok_bdl_c1",
+                        "lineThickness" : 5
                     },
                     {
                         "bullet": "none",
                         "id": "AmGraph-8",
                         "title": "BedRight_C1 Light",
-                        "valueField": "hok_bdr_c1"
+                        "valueField": "hok_bdr_c1",
+                        "lineThickness" : 5
                     }
                 ],
                 "guides": [],
