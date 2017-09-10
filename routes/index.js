@@ -16,13 +16,43 @@ function update() {
 }
 */
 router.get('/', function (req, res, next) {
-    res.render('index', {
+    res.render('rm402', {
         title: 'Hok Room 402',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm401', function (req, res, next) {
+    res.render('rm401', {
+        title: 'Hok House',
         chart: 'chartdiv'
     });
 });
 router.get('/rm402', function (req, res, next) {
     res.render('rm402', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm403', function (req, res, next) {
+    res.render('rm403', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm404', function (req, res, next) {
+    res.render('rm404', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm405', function (req, res, next) {
+    res.render('rm405', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm406', function (req, res, next) {
+    res.render('rm406', {
         title: 'Hok House',
         chart: 'chartdiv'
     });
