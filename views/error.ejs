@@ -83,11 +83,114 @@ z-index: 999999">
                         <span class="link-title menu_hide">&nbsp; Ho̍k Rooms</span>
                         <span class="fa arrow menu_hide"></span>
                     </a>
-                    <ul>
+                    <ul class="sub-menu">
                         <li>
-                            <a href="rm402">
-                                <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 402
+                            <a href="javascript:;">
+                                <i class="fa fa-angle-right"></i> &nbsp; Second Floor
+                                <span class="fa arrow"></span>
                             </a>
+                            <ul class="sub-menu sub-submenu">
+                                <li>
+                                    <a href="rm201">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 201
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm202">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 202
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm203">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 203
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm204">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 204
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm205">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 205
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="javascript:;">
+                                <i class="fa fa-angle-right"></i> &nbsp; Third Floor
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="sub-menu sub-submenu">
+                                <li>
+                                    <a href="rm301">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 301
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm302">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 302
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm303">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 303
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm304">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 304
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm305">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 305
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="javascript:;">
+                                <i class="fa fa-angle-right"></i> &nbsp; Fourth Floor
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="sub-menu sub-submenu">
+                                <li>
+                                    <a href="rm401">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 401
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm402">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 402
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm403">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 403
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm404">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 404
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm405">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 405
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="rm406">
+                                        <i class="fa fa-angle-right"></i> &nbsp; Ho̍k Room 406
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
@@ -115,8 +218,8 @@ z-index: 999999">
                     <div class="row">
                         <div class="col-6">
                             <h4 class="m-t-5">
-                                <i class="fa fa-home"></i>
-                                Room 402
+                                <i class="fa fa-warning"></i>
+                                Warning
                             </h4>
                         </div>
                     </div>
@@ -190,69 +293,7 @@ z-index: 999999">
 <script>eval(mod_pagespeed_0hM1ZEEq1u);</script>
 <script type="text/javascript" src="js/pages/p_notify.js.pagespeed.jm.E2cU5JtMgK.js"></script>
 <!--Page level scripts-->
-<script type="text/javascript">
-    //<![CDATA[
-
-    'use strict';
-    var table=$('#example_demo').DataTable({"dom":"<'row'<'col-md-5 col-sm-12'l><'col-md-7 col-sm-12'f>r><'table-responsive't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>"});
-    var $example_demo=$('#example_demo tbody');
-    $example_demo.on('mouseenter','td',function(){
-        var colIdx=table.cell(this).index().column;
-        $(table.cells().nodes()).removeClass('highlight');
-        $(table.column(colIdx).nodes()).addClass('highlight');
-        return false;
-    });
-    $example_demo.on('mouseleave','td',function(){
-        $(table.cells().nodes()).removeClass('highlight');
-        return false;
-    });
-    $example_demo.on('click','tr',function(){
-        $(this).toggleClass('selected');$('#del_button').on('click',function(){
-            table.row('#example_demo tbody .selected').remove().draw(false);
-            return false;
-        });
-        return false;
-    });
-    $(".dataTables_wrapper").removeClass("form-inline");$(".dataTables_paginate .pagination").addClass("float-right");
-
-    $(document).ready(function () {
-        var tabledata = [];
-        var socket = io.connect('http://192.168.100.34:10000');
-        socket.emit('done', 0);
-
-
-        function ShowNotify(title, message, datetime){
-            new PNotify({
-                title: title,
-                text: message + '<br>' + datetime,
-                type:'error',
-                after_init:
-                    function(notice){
-                        notice.attention('rubberBand');
-                    }
-            });
-        }
-
-        socket.on('error_info_page', function (data) {
-            for(var i=data.length - 1;i>=0;i--){
-                tabledata.push([data[i]['error_type'], data[i]['datetime'], data[i]['error_info']]);
-            }
-            for(var i=0;i<data.length;i++){
-                table.row.add(tabledata[i]).draw(false);
-            }
-        });
-        socket.on('error_info', function (data) {
-            for(var i=data.length - 1;i>=0;i--){
-                tabledata.push([data[i]['error_type'], data[i]['datetime'], data[i]['error_info']]);
-            }
-            for(var i=0;i<data.length;i++){
-                ShowNotify(data[i]['error_type'], data[i]['error_info'], data[i]['datetime']);
-                table.row.add(tabledata[i]).draw(false);
-            }
-        });
-    });
-
-    //]]>
+<script type="text/javascript" src="javascripts/pages/error.js">
 </script>
 <!-- end of global scripts-->
 </body>

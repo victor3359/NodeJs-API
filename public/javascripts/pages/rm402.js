@@ -19,39 +19,39 @@ $(document).ready(function() {
     $('#WC_Light_Switch').click(function () {
         if(getText('WC_Light_State') == 'Off'){
             socket.emit('WCLight', 'ON');
-            controlalert('W.C. Light', 'ON');
+            controlalert('W.C. Light', 'On');
         }else{
             socket.emit('WCLight', 'OFF');
-            controlalert('W.C. Light', 'OFF');
+            controlalert('W.C. Light', 'Off');
         }
     });
     $('#WD_Light_Switch').click(function () {
         if(getText('WD_Light_State') == 'Off'){
             socket.emit('WDLight', 'ON');
-            controlalert('Window Light', 'ON');
+            controlalert('Window Light', 'On');
         }else{
             socket.emit('WDLight', 'OFF');
-            controlalert('Window Light', 'OFF');
+            controlalert('Window Light', 'Off');
         }
     });
     $('#RM_Light_Switch').click(function () {
         if(getText('RM_Light_State') == 'Off'){
             socket.emit('RMLight', 'ON');
-            controlalert('Room Lights', 'ON');
+            controlalert('Room Lights', 'On');
         }else{
             socket.emit('RMLight', 'OFF');
-            controlalert('Room Lights', 'OFF');
+            controlalert('Room Lights', 'Off');
         }
     });
     $('#BD_Light_Switch').click(function () {
         if(getText('BD_Light_State') == 'Off'){
             socket.emit('BDLeftLight', 'ON');
             socket.emit('BDRightLight', 'ON');
-            controlalert('Bed Lights', 'ON');
+            controlalert('Bed Lights', 'On');
         }else{
             socket.emit('BDLeftLight', 'OFF');
             socket.emit('BDRightLight', 'OFF');
-            controlalert('Bed Lights', 'OFF');
+            controlalert('Bed Lights', 'Off');
         }
     });
     $('#All_On').click(function () {
@@ -60,7 +60,7 @@ $(document).ready(function() {
         socket.emit('RMLight', 'ON');
         socket.emit('BDLeftLight', 'ON');
         socket.emit('BDRightLight', 'ON');
-        controlalert('Lights', 'ON All');
+        controlalert('Lights', 'On All');
     });
     $('#All_Off').click(function () {
         socket.emit('WCLight', 'OFF');
@@ -68,7 +68,7 @@ $(document).ready(function() {
         socket.emit('RMLight', 'OFF');
         socket.emit('BDLeftLight', 'OFF');
         socket.emit('BDRightLight', 'OFF');
-        controlalert('Lights', 'OFF All');
+        controlalert('Lights', 'Off All');
     });
 
     //Controller Def End
@@ -182,7 +182,7 @@ $(document).ready(function() {
         });
     });
 
-    socket.on('rm402_chart_init', function (data) {
+    socket.on('rm402_chart_rt', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 hok_w: parseFloat(data[i]['kW']) * 1000,
@@ -293,7 +293,27 @@ $(document).ready(function() {
         });
     });
 
-    socket.on('update_pie', function (data) {
+    socket.on('update_kWh4', function (data) {
+        var chart=c3.generate({bindto:'#chart_kWh',data:{
+            columns:[
+                ['Room 401',data['Rm_401']],
+                ['Room 402',data['Rm_402']],
+                ['Room 403',data['Rm_403']],
+                ['Room 404',data['Rm_404']],
+                ['Room 405',data['Rm_405']],
+                ['Room 406',data['Rm_406']]
+            ],
+            type:'bar',
+            colors:
+                {data1:'#0fb0c0',data2:'#00c0ef',data3:'#0fb0c0'},
+            color:function(color,d){
+                return d.id&&d.id==='data3'?d3.rgb(color):color;
+            }
+        }
+        });
+    });
+
+    socket.on('update_pie4', function (data) {
         var chart1=c3.generate({bindto:'#rmkWh_chart',data:{
             columns:[['Room 401',data['Rm_401']],['Room 402',data['Rm_402']],['Room 403',data['Rm_403']]
                 ,['Room 404',data['Rm_404']],['Room 405',data['Rm_405']],['Room 406',data['Rm_406']]],type:'donut'},
@@ -309,8 +329,7 @@ $(document).ready(function() {
             ,8000);
     });
 
-    socket.on('chart_trend', function (data) {
-        console.log(data);
+    socket.on('rm402_chart_trend', function (data) {
         var chart = AmCharts.makeChart( "chart_trend2", {
             "type": "serial",
             "addClassNames": true,
@@ -356,25 +375,6 @@ $(document).ready(function() {
     });
 
 
-    socket.on('update_kWh', function (data) {
-        var chart=c3.generate({bindto:'#chart_kWh',data:{
-            columns:[
-                ['Room 401',data['Rm_401']],
-                ['Room 402',data['Rm_402']],
-                ['Room 403',data['Rm_403']],
-                ['Room 404',data['Rm_404']],
-                ['Room 405',data['Rm_405']],
-                ['Room 406',data['Rm_406']]
-            ],
-            type:'bar',
-            colors:
-                {data1:'#0fb0c0',data2:'#00c0ef',data3:'#0fb0c0'},
-            color:function(color,d){
-                return d.id&&d.id==='data3'?d3.rgb(color):color;
-            }
-        }
-        });
-    });
 
 
 //   flip js
@@ -392,7 +392,7 @@ $(document).ready(function() {
         suffix: ''
     };
 
-    socket.on('chart_status', function (data) {
+    socket.on('rm402_chart_status', function (data) {
         var date = [];
         var dataW = [], datakWh = [];
         for(var i = data.length - 1;i >= 0;i--){
