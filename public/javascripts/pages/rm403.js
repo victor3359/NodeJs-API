@@ -110,7 +110,7 @@ $(document).ready(function() {
     });
 
     //Room 402 Socket
-    socket.on('rm402_init', function (data) {
+    socket.on('rm403_init', function (data) {
         powerdata.push(data['kWh']);
         powerdata_c.push(data['kW'] * 1000);
 
@@ -178,7 +178,7 @@ $(document).ready(function() {
         });
     });
 
-    socket.on('rm402_chart_rt', function (data) {
+    socket.on('rm403_chart_rt', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 hok_w: parseFloat(data[i]['kW']) * 1000,
@@ -194,7 +194,7 @@ $(document).ready(function() {
         }
         updatechartrt();
     });
-    socket.on('rm402_chart_data', function (data) {
+    socket.on('rm403_chart_data', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 hok_w: parseFloat(data[i]['kW']) * 1000,
@@ -212,7 +212,7 @@ $(document).ready(function() {
     });
 
 
-    socket.on('rm402_data', function (data) {
+    socket.on('rm403_data', function (data) {
         powerdata.push(data['kWh']);
         powerdata_c.push(data['kW'] * 1000);
         if(data['PWNF']){
@@ -306,7 +306,7 @@ $(document).ready(function() {
             ,8000);
     });
 
-    socket.on('rm402_chart_trend', function (data) {
+    socket.on('rm403_chart_trend', function (data) {
         var chart = AmCharts.makeChart( "chart_trend2", {
             "type": "serial",
             "addClassNames": true,
@@ -369,7 +369,7 @@ $(document).ready(function() {
         suffix: ''
     };
 
-    socket.on('rm402_chart_status', function (data) {
+    socket.on('rm403_chart_status', function (data) {
         var date = [];
         var dataW = [], datakWh = [];
         for(var i = data.length - 1;i >= 0;i--){
@@ -554,7 +554,7 @@ $(document).ready(function() {
                 },
                 "titles": [
                     {
-                        "id": "Hok_402",
+                        "id": "Hok_403",
                         "size": 15,
                         "text": ""
                     }

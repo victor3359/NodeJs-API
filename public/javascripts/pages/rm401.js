@@ -6,7 +6,10 @@ $(document).ready(function() {
     var amperedata = [];
     var powerdata_c = [];
     var chartdata = [];
-    var chart_trenddata = [];
+    var CO2data = [];
+    var PM25data = [];
+    var RHdata = [];
+    var TEMPdata = [];
 
     function controlalert(name, cmd){
         iziToast.show({title:'Command',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
@@ -109,13 +112,22 @@ $(document).ready(function() {
         setText('warning_count', data);
     });
 
-    //Room 402 Socket
-    socket.on('rm402_init', function (data) {
+    //Room 401 Socket
+    socket.on('rm401_init', function (data) {
         powerdata.push(data['kWh']);
         powerdata_c.push(data['kW'] * 1000);
+        CO2data.push(data['CO2']);
+        PM25data.push(data['PM25']);
+        RHdata.push(data['RH'] / 100);
+        TEMPdata.push(data['TEMP'] / 100);
 
         new CountUp("widget_countup1", 0,data['kWh'] , 0, 5.0, options).start();
         new CountUp("widget_countup4", 0,data['kW'] * 1000 , 0, 5.0, options).start();
+        new CountUp("widget_countup5", 0,data['CO2'] , 0, 5.0, options).start();
+        new CountUp("widget_countup6", 0,data['PM25'] , 0, 5.0, options).start();
+        new CountUp("widget_countup7", 0,parseInt(data['RH'] / 100) , 0, 5.0, options).start();
+        new CountUp("widget_countup8", 0,parseInt(data['TEMP'] / 100) , 0, 5.0, options).start();
+
         if(data['PWNF']){
             setText("widget_countup2", '活躍');
         }else{
@@ -123,6 +135,10 @@ $(document).ready(function() {
         }
         setText("widget_countup12", data['kWh']);
         setText("widget_countup42", data['kW'] * 1000);
+        setText("widget_countup52", data['CO2']);
+        setText("widget_countup62", data['PM25']);
+        setText("widget_countup72", data['RH'] / 100);
+        setText("widget_countup82", data['TEMP'] / 100);
 
         if(data['WCL']){
             state('WC_Light_State', 1);
@@ -152,22 +168,6 @@ $(document).ready(function() {
             fillColor: '#e7f5ff',
             tooltipSuffix: ' kWh'
         });
-        $('#salesspark-chart').sparkline(voltagedata,{
-            type: 'line',
-            width: "100%",
-            height: '48',
-            spotColor: '#f0ad4e',
-            lineColor: '#EF6F6C',
-            tooltipSuffix: ' V'
-        });
-        $('#mousespeed').sparkline(amperedata, {
-            type: 'line',
-            height: "48",
-            width: "100%",
-            lineColor: '#0cd32d',
-            fillColor: '#27c5f0',
-            tooltipSuffix: ' mA'
-        });
         $("#rating").sparkline(powerdata_c, {
             type: 'line',
             width: "100%",
@@ -176,9 +176,41 @@ $(document).ready(function() {
             lineColor: '#DF0F7C',
             tooltipSuffix: ' W'
         });
+        $("#CO2_chart").sparkline(CO2data, {
+            type: 'line',
+            width: '100%',
+            height: '48',
+            lineColor: '#4fb7fe',
+            fillColor: '#e7f5ff',
+            tooltipSuffix: ' ppm'
+        });
+        $('#PM25_chart').sparkline(PM25data,{
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#f0ad4e',
+            lineColor: '#EF6F6C',
+            tooltipSuffix: ' μg/m3'
+        });
+        $('#RH_chart').sparkline(RHdata, {
+            type: 'line',
+            height: "48",
+            width: "100%",
+            lineColor: '#0cd32d',
+            fillColor: '#27c5f0',
+            tooltipSuffix: ' %'
+        });
+        $("#TEMP_chart").sparkline(TEMPdata, {
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#FF00FF',
+            lineColor: '#DF0F7C',
+            tooltipSuffix: ' ℃'
+        });
     });
 
-    socket.on('rm402_chart_rt', function (data) {
+    socket.on('rm401_chart_rt', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 hok_w: parseFloat(data[i]['kW']) * 1000,
@@ -194,7 +226,7 @@ $(document).ready(function() {
         }
         updatechartrt();
     });
-    socket.on('rm402_chart_data', function (data) {
+    socket.on('rm401_chart_data', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 hok_w: parseFloat(data[i]['kW']) * 1000,
@@ -212,9 +244,14 @@ $(document).ready(function() {
     });
 
 
-    socket.on('rm402_data', function (data) {
+    socket.on('rm401_data', function (data) {
         powerdata.push(data['kWh']);
         powerdata_c.push(data['kW'] * 1000);
+        CO2data.push(data['CO2']);
+        PM25data.push(data['PM25']);
+        RHdata.push(data['RH'] / 100);
+        TEMPdata.push(data['TEMP'] / 100);
+
         if(data['PWNF']){
             setText("widget_countup2", '活躍');
         }else{
@@ -223,8 +260,16 @@ $(document).ready(function() {
 
         setText("widget_countup1", parseInt(data['kWh']));
         setText("widget_countup4", data['kW'] * 1000);
+        setText("widget_countup5", data['CO2']);
+        setText("widget_countup6", data['PM25']);
+        setText("widget_countup7", parseInt(data['RH'] / 100));
+        setText("widget_countup8", parseInt(data['TEMP'] / 100));
         setText("widget_countup12", data['kWh']);
         setText("widget_countup42", data['kW'] * 1000);
+        setText("widget_countup52", data['CO2']);
+        setText("widget_countup62", data['PM25']);
+        setText("widget_countup72", data['RH'] / 100);
+        setText("widget_countup82", data['TEMP'] / 100);
 
         if(data['WCL']){
             state('WC_Light_State', 1);
@@ -248,6 +293,10 @@ $(document).ready(function() {
         }
 
 
+        if (CO2data.length > 10) CO2data.shift();
+        if (PM25data.length > 10) PM25data.shift();
+        if (RHdata.length > 10) RHdata.shift();
+        if (TEMPdata.length > 10) TEMPdata.shift();
         if (powerdata.length > 10) powerdata.shift();
         if (powerdata_c.length > 10) powerdata_c.shift();
         if (chartdata.length > 4000) chartdata.shift();
@@ -267,6 +316,38 @@ $(document).ready(function() {
             spotColor: '#FF00FF',
             lineColor: '#DF0F7C',
             tooltipSuffix: ' W'
+        });
+        $("#CO2_chart").sparkline(CO2data, {
+            type: 'line',
+            width: '100%',
+            height: '48',
+            lineColor: '#4fb7fe',
+            fillColor: '#e7f5ff',
+            tooltipSuffix: ' ppm'
+        });
+        $('#PM25_chart').sparkline(PM25data,{
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#f0ad4e',
+            lineColor: '#EF6F6C',
+            tooltipSuffix: ' μg/m3'
+        });
+        $('#RH_chart').sparkline(RHdata, {
+            type: 'line',
+            height: "48",
+            width: "100%",
+            lineColor: '#0cd32d',
+            fillColor: '#27c5f0',
+            tooltipSuffix: ' %'
+        });
+        $("#TEMP_chart").sparkline(TEMPdata, {
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#FF00FF',
+            lineColor: '#DF0F7C',
+            tooltipSuffix: ' ℃'
         });
     });
 
@@ -306,7 +387,7 @@ $(document).ready(function() {
             ,8000);
     });
 
-    socket.on('rm402_chart_trend', function (data) {
+    socket.on('rm401_chart_trend', function (data) {
         var chart = AmCharts.makeChart( "chart_trend2", {
             "type": "serial",
             "addClassNames": true,
@@ -356,7 +437,7 @@ $(document).ready(function() {
 
 //   flip js
 
-    $("#top_widget1, #top_widget4").flip({
+    $("#top_widget1, #top_widget4, #top_widget5, #top_widget6, #top_widget7, #top_widget8").flip({
         axis: 'x',
         trigger: 'hover'
     });
@@ -369,7 +450,7 @@ $(document).ready(function() {
         suffix: ''
     };
 
-    socket.on('rm402_chart_status', function (data) {
+    socket.on('rm401_chart_status', function (data) {
         var date = [];
         var dataW = [], datakWh = [];
         for(var i = data.length - 1;i >= 0;i--){

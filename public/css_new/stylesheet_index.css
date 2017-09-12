@@ -7920,7 +7920,7 @@ svg .icon {
     margin-top: -5px;
     line-height: 1.4;
 }
-#widget_countup1,#widget_countup2,#widget_countup3,#widget_countup4,#widget_countup12,#widget_countup22,#widget_countup32,#widget_countup42{
+#widget_countup1,#widget_countup2,#widget_countup3,#widget_countup4,#widget_countup12,#widget_countup22,#widget_countup32,#widget_countup42, #widget_countup5, #widget_countup6, #widget_countup7, #widget_countup8, #widget_countup52, #widget_countup62 ,#widget_countup72, #widget_countup82{
     font-size: 35px;
     line-height: 1;
 }
@@ -8305,5 +8305,54 @@ svg .icon {
 .social-icon i {
     line-height: 25px;
     width: 20px;
+}
+.iconCO2{
+  background: url(../img_new/iconCO2.png) no-repeat;
+  width: 64px;
+  height: 64px;
+  border: none;
+  display:inline-block;
+}
+.iconPM25{
+  background: url(../img_new/iconPM25.png) no-repeat;
+  width: 64px;
+  height: 64px;
+  border: none;
+  display:inline-block;
+}
+.iconRH{
+  background: url(../img_new/iconRH.png) no-repeat;
+  width: 64px;
+  height: 64px;
+  border: none;
+  display:inline-block;
+}
+.iconTEMP{
+  background: url(../img_new/iconTEMP.png) no-repeat;
+  width: 64px;
+  height: 64px;
+  border: none;
+  display:inline-block;
+}
+.icon2F{
+  background: url(../img_new/Second.png) no-repeat;
+  width: 16px;
+  height: 16px;
+  border: none;
+  display:inline-block;
+}
+.icon3F{
+  background: url(../img_new/Third.png) no-repeat;
+  width: 16px;
+  height: 16px;
+  border: none;
+  display:inline-block;
+}
+.icon4F{
+  background: url(../img_new/Fourth.png) no-repeat;
+  width: 16px;
+  height: 16px;
+  border: none;
+  display:inline-block;
 }
 /*======social-counter end=========*/

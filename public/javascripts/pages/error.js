@@ -24,7 +24,6 @@ $(".dataTables_wrapper").removeClass("form-inline");$(".dataTables_paginate .pag
 
 $(document).ready(function () {
     var tabledata = [];
-    var socket = io.connect('http://localhost:10000');
     socket.emit('done', 0);
 
 
