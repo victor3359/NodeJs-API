@@ -7,7 +7,7 @@ $(document).ready(function() {
     var powerdata_c = [];
     var chartdata = [];
 
-    var room = '405';
+    var room = '301';
 
     function controlalert(name, cmd){
         iziToast.show({title:'Command',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
@@ -24,39 +24,39 @@ $(document).ready(function() {
             controlalert('W.C. Light', 'Off');
         }
     });
-    $('#RM_Light_Switch').click(function () {
+    $('#BD1_Light_Switch').click(function () {
         if(getText('RM_Light_State') == 'Off'){
             socket.emit(room + 'RMLight', 'ON');
-            controlalert('Room Lights', 'On');
+            controlalert('Room Light', 'On');
         }else{
             socket.emit(room + 'RMLight', 'OFF');
-            controlalert('Room Lights', 'Off');
+            controlalert('Room Light', 'Off');
         }
     });
-    $('#BDL_Light_Switch').click(function () {
-        if(getText('BDU_Light_State') == 'Off'){
-            socket.emit(room + 'BDUpLight', 'ON');
-            controlalert('BedUp Light', 'On');
+    $('#BD2_Light_Switch').click(function () {
+        if(getText('GST_Light_State') == 'Off'){
+            socket.emit(room + 'GSTLight', 'ON');
+            controlalert('GST Light', 'On');
         }else{
-            socket.emit(room + 'BDUpLight', 'OFF');
-            controlalert('BedUp Light', 'Off');
+            socket.emit(room + 'GSTLight', 'OFF');
+            controlalert('GST Light', 'Off');
         }
     });
-    $('#BDR_Light_Switch').click(function () {
-        if(getText('BDD_Light_State') == 'Off'){
-            socket.emit(room + 'BDDownLight', 'ON');
-            controlalert('BedDown Lights', 'On');
+    $('#BD3_Light_Switch').click(function () {
+        if(getText('BD_Light_State') == 'Off'){
+            socket.emit(room + 'BDLight', 'ON');
+            controlalert('Bed Light', 'On');
         }else{
-            socket.emit(room + 'BDDownLight', 'OFF');
-            controlalert('BedDown Lights', 'Off');
+            socket.emit(room + 'BDLight', 'OFF');
+            controlalert('Bed Light', 'Off');
         }
     });
     $('#All_On').click(function () {
         /*
         socket.emit(room + 'WCLight', 'ON');
         socket.emit(room + 'RMLight', 'ON');
-        socket.emit(room + 'BDUpLight', 'ON');
-        socket.emit(room + 'BDDownLight', 'ON');
+        socket.emit(room + 'GSTLight', 'ON');
+        socket.emit(room + 'BDLight', 'ON');
         */
         socket.emit(room + 'Light', 'ON');
         controlalert('Lights', 'On All');
@@ -65,8 +65,8 @@ $(document).ready(function() {
         /*
         socket.emit(room + 'WCLight', 'OFF');
         socket.emit(room + 'RMLight', 'OFF');
-        socket.emit(room + 'BDUpLight', 'OFF');
-        socket.emit(room + 'BDDownLight', 'OFF');
+        socket.emit(room + 'GSTLight', 'OFF');
+        socket.emit(room + 'BDLight', 'OFF');
         */
         socket.emit(room + 'Light', 'OFF');
         controlalert('Lights', 'Off All');
@@ -112,7 +112,7 @@ $(document).ready(function() {
         setText('warning_count', data);
     });
 
-    //Room 405 Socket
+    //Room 301 Socket
     socket.on('rm' + room + '_init', function (data) {
         powerdata.push(data['kWh']);
         powerdata_c.push(data['kW'] * 1000);
@@ -133,20 +133,20 @@ $(document).ready(function() {
         }else{
             state('WC_Light_State', 0);
         }
-        if(data['RML']){
+        if(data['RMC1'] || data['RMC2'] || data['RMC3']){
             state('RM_Light_State', 1);
         }else{
             state('RM_Light_State', 0);
         }
-        if(data['BDUL']){
-            state('BDU_Light_State', 1);
+        if(data['GSTC1']){
+            state('GST_Light_State', 1);
         }else{
-            state('BDU_Light_State', 0);
+            state('GST_Light_State', 0);
         }
-        if(data['BDDL']){
-            state('BDD_Light_State', 1);
+        if(data['BDLC1'] || data['BDRC1']){
+            state('BD_Light_State', 1);
         }else{
-            state('BDD_Light_State', 0);
+            state('BD_Light_State', 0);
         }
         $("#visitsspark-chart").sparkline(powerdata, {
             type: 'line',
@@ -187,22 +187,28 @@ $(document).ready(function() {
             chartdata.push({
                 data1: parseFloat(data[i]['kW']) * 1000,
                 data2: data[i]['WCL'] * 3000,
-                data3: data[i]['RML'] * 3000,
-                data4: data[i]['BDUL'] * 3000,
-                data5: data[i]['BDDL'] * 3000,
+                data3: data[i]['RMC1'],
+                data4: data[i]['RMC2'],
+                data5: data[i]['RMC3'],
+                data6: data[i]['GSTC1'],
+                data7: data[i]['BDLC1'],
+                data8: data[i]['BDRC1'],
                 date: data[i]['TIME']
             });
         }
         updatechartrt();
     });
-    socket.on('rm404_chart_data', function (data) {
+    socket.on('rm'+ room +'_chart_data', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 data1: parseFloat(data[i]['kW']) * 1000,
                 data2: data[i]['WCL'] * 3000,
-                data3: data[i]['RML'] * 3000,
-                data4: data[i]['BDLL'] * 3000,
-                data5: data[i]['BDRL'] * 3000,
+                data3: data[i]['RMC1'],
+                data4: data[i]['RMC2'],
+                data5: data[i]['RMC3'],
+                data6: data[i]['GSTC1'],
+                data7: data[i]['BDLC1'],
+                data8: data[i]['BDRC1'],
                 date: data[i]['TIME']
             });
         }
@@ -229,20 +235,20 @@ $(document).ready(function() {
         }else{
             state('WC_Light_State', 0);
         }
-        if(data['RML']){
+        if(data['RMC1'] || data['RMC2'] || data['RMC3']){
             state('RM_Light_State', 1);
         }else{
             state('RM_Light_State', 0);
         }
-        if(data['BDUL']){
-            state('BDU_Light_State', 1);
+        if(data['GSTC1']){
+            state('GST_Light_State', 1);
         }else{
-            state('BDU_Light_State', 0);
+            state('GST_Light_State', 0);
         }
-        if(data['BDDL']){
-            state('BDD_Light_State', 1);
+        if(data['BDLC1'] || data['BDRC1']){
+            state('BD_Light_State', 1);
         }else{
-            state('BDD_Light_State', 0);
+            state('BD_Light_State', 0);
         }
 
         if (powerdata.length > 10) powerdata.shift();
@@ -267,15 +273,14 @@ $(document).ready(function() {
         });
     });
 
-    socket.on('update_kWh4', function (data) {
+    socket.on('update_kWh3', function (data) {
         var chart=c3.generate({bindto:'#chart_kWh',data:{
             columns:[
-                ['Room 401',data['Rm_401']],
-                ['Room 402',data['Rm_402']],
-                ['Room 403',data['Rm_403']],
-                ['Room 404',data['Rm_404']],
-                ['Room 405',data['Rm_405']],
-                ['Room 406',data['Rm_406']]
+                ['Room 301',data['Rm_301']],
+                ['Room 302',data['Rm_302']],
+                ['Room 303',data['Rm_303']],
+                ['Room 304',data['Rm_304']],
+                ['Room 305',data['Rm_305']]
             ],
             type:'bar',
             colors:
@@ -287,17 +292,17 @@ $(document).ready(function() {
         });
     });
 
-    socket.on('update_pie4', function (data) {
+    socket.on('update_pie3', function (data) {
         var chart1=c3.generate({bindto:'#rmkWh_chart',data:{
-            columns:[['Room 401',data['Rm_401']],['Room 402',data['Rm_402']],['Room 403',data['Rm_403']]
-                ,['Room 404',data['Rm_404']],['Room 405',data['Rm_405']],['Room 406',data['Rm_406']]],type:'donut'},
+            columns:[['Room 301',data['Rm_301']],['Room 302',data['Rm_302']],['Room 303',data['Rm_303']]
+                ,['Room 304',data['Rm_304']],['Room 305',data['Rm_305']]],type:'donut'},
             donut:{title:"Fourth Floor"},
             color:{pattern:['#00c0ef','#0fb0c0','#668cff','#ffb300','#69B3BF']}
         });
         setTimeout(function(){
                 chart1.load({
-                    columns:[["Room 401",data['Rm_401h']],["Room 402",data['Rm_402h']],["Room 403",data['Rm_403h']],
-                        ["Room 404",data['Rm_404h']],["Room 405",data['Rm_405h']],["Room 406",data['Rm_406h']]]
+                    columns:[["Room 301",data['Rm_301h']],["Room 302",data['Rm_302h']],["Room 303",data['Rm_303h']],
+                        ["Room 304",data['Rm_304h']],["Room 305",data['Rm_305h']]]
                 });
             }
             ,4000);
@@ -490,7 +495,7 @@ $(document).ready(function() {
                     {
                         "bullet": "none",
                         "id": "AmGraph-3",
-                        "title": "Room Light",
+                        "title": "Room Light C1",
                         "valueField": "data3",
                         "lineThickness" : 4,
                         "lineColor": "#77DDFF"
@@ -498,7 +503,7 @@ $(document).ready(function() {
                     {
                         "bullet": "none",
                         "id": "AmGraph-4",
-                        "title": "BedLeft Light",
+                        "title": "Room Light C2",
                         "valueField": "data4",
                         "lineThickness" : 4,
                         "lineColor": "#00DD00"
@@ -506,10 +511,34 @@ $(document).ready(function() {
                     {
                         "bullet": "none",
                         "id": "AmGraph-5",
-                        "title": "BedRight Light",
+                        "title": "Room Light C3",
                         "valueField": "data5",
                         "lineThickness" : 4,
                         "lineColor": "#CCFF33"
+                    },
+                    {
+                        "bullet": "none",
+                        "id": "AmGraph-6",
+                        "title": "Guest Light C1",
+                        "valueField": "data6",
+                        "lineThickness" : 4,
+                        "lineColor": "#668800"
+                    },
+                    {
+                        "bullet": "none",
+                        "id": "AmGraph-7",
+                        "title": "BedLeft Light C1",
+                        "valueField": "data7",
+                        "lineThickness" : 4,
+                        "lineColor": "#FFCC22"
+                    },
+                    {
+                        "bullet": "none",
+                        "id": "AmGraph-8",
+                        "title": "BedRight Light C1",
+                        "valueField": "data8",
+                        "lineThickness" : 4,
+                        "lineColor": "#CC0000"
                     }
                 ],
                 "guides": [],

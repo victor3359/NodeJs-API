@@ -39,6 +39,66 @@ router.get('/pa400', function (req, res, next) {
         chart: 'chartdiv'
     });
 });
+router.get('/rm201', function (req, res, next) {
+    res.render('rm201', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm202', function (req, res, next) {
+    res.render('rm202', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm203', function (req, res, next) {
+    res.render('rm203', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm204', function (req, res, next) {
+    res.render('rm204', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm205', function (req, res, next) {
+    res.render('rm205', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm301', function (req, res, next) {
+    res.render('rm301', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm302', function (req, res, next) {
+    res.render('rm302', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm303', function (req, res, next) {
+    res.render('rm303', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm304', function (req, res, next) {
+    res.render('rm304', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm305', function (req, res, next) {
+    res.render('rm305', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
 router.get('/rm401', function (req, res, next) {
     res.render('rm401', {
         title: 'Hok House',

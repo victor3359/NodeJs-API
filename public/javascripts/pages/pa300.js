@@ -52,22 +52,13 @@ $(document).ready(function() {
         }
     });
     $('#All_On').click(function () {
-        socket.emit('WCLight', 'ON');
-        socket.emit('WDLight', 'ON');
-        socket.emit('RMLight', 'ON');
-        socket.emit('BDLeftLight', 'ON');
-        socket.emit('BDRightLight', 'ON');
+        socket.emit('Public3F', 'ON');
         controlalert('Lights', 'On All');
     });
     $('#All_Off').click(function () {
-        socket.emit('WCLight', 'OFF');
-        socket.emit('WDLight', 'OFF');
-        socket.emit('RMLight', 'OFF');
-        socket.emit('BDLeftLight', 'OFF');
-        socket.emit('BDRightLight', 'OFF');
+        socket.emit('Public3F', 'OFF');
         controlalert('Lights', 'Off All');
     });
-
     //Controller Def End
     function state(name, flag){
         if(flag) {
@@ -108,8 +99,8 @@ $(document).ready(function() {
         setText('warning_count', data);
     });
 
-    //Room 402 Socket
-    socket.on('pa400_init', function (data) {
+    //Room 300 Socket
+    socket.on('pa300_init', function (data) {
         CO2data.push(data['CO2']);
         PM25data.push(data['PM25']);
         RHdata.push(data['RH']);
@@ -180,7 +171,7 @@ $(document).ready(function() {
     });
 
 
-    socket.on('pa400_data', function (data) {
+    socket.on('pa300_data', function (data) {
         CO2data.push(data['CO2']);
         PM25data.push(data['PM25']);
         RHdata.push(data['RH']);

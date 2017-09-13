@@ -58,19 +58,25 @@ $(document).ready(function() {
         }
     });
     $('#All_On').click(function () {
+        /*
         socket.emit(room + 'WCLight', 'ON');
         socket.emit(room + 'GSTLight', 'ON');
         socket.emit(room + 'RMLight', 'ON');
         socket.emit(room + 'BDLeftLight', 'ON');
         socket.emit(room + 'BDRightLight', 'ON');
+        */
+        socket.emit(room + 'Light', 'ON');
         controlalert('Lights', 'On All');
     });
     $('#All_Off').click(function () {
+        /*
         socket.emit(room + 'WCLight', 'OFF');
         socket.emit(room + 'GSTLight', 'OFF');
         socket.emit(room + 'RMLight', 'OFF');
         socket.emit(room + 'BDLeftLight', 'OFF');
         socket.emit(room + 'BDRightLight', 'OFF');
+        */
+        socket.emit(room + 'Light', 'OFF');
         controlalert('Lights', 'Off All');
     });
 
@@ -213,7 +219,6 @@ $(document).ready(function() {
     });
 
     socket.on('rm' + room + '_chart_rt', function (data) {
-        console.log(data);
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 data1: parseFloat(data[i]['kW']) * 1000,
@@ -229,7 +234,7 @@ $(document).ready(function() {
         }
         updatechartrt();
     });
-    socket.on('rm401_chart_data', function (data) {
+    socket.on('rm'+ room +'_chart_data', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 data1: parseFloat(data[i]['kW']) * 1000,

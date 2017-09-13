@@ -52,19 +52,11 @@ $(document).ready(function() {
         }
     });
     $('#All_On').click(function () {
-        socket.emit('WCLight', 'ON');
-        socket.emit('WDLight', 'ON');
-        socket.emit('RMLight', 'ON');
-        socket.emit('BDLeftLight', 'ON');
-        socket.emit('BDRightLight', 'ON');
+        socket.emit('Public2F', 'ON');
         controlalert('Lights', 'On All');
     });
     $('#All_Off').click(function () {
-        socket.emit('WCLight', 'OFF');
-        socket.emit('WDLight', 'OFF');
-        socket.emit('RMLight', 'OFF');
-        socket.emit('BDLeftLight', 'OFF');
-        socket.emit('BDRightLight', 'OFF');
+        socket.emit('Public2F', 'OFF');
         controlalert('Lights', 'Off All');
     });
 

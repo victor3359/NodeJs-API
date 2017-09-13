@@ -50,17 +50,20 @@ $(document).ready(function() {
         }
     });
     $('#All_On').click(function () {
-        socket.emit('404WCLight', 'ON');
+        /*socket.emit('404WCLight', 'ON');
         socket.emit('404RMLight', 'ON');
         socket.emit('404BDLeftLight', 'ON');
-        socket.emit('404BDRightLight', 'ON');
+        socket.emit('404BDRightLight', 'ON');*/
+        socket.emit('404Light', 'ON');
         controlalert('Lights', 'On All');
     });
     $('#All_Off').click(function () {
+        /*
         socket.emit('404WCLight', 'OFF');
         socket.emit('404RMLight', 'OFF');
         socket.emit('404BDLeftLight', 'OFF');
-        socket.emit('404BDRightLight', 'OFF');
+        socket.emit('404BDRightLight', 'OFF');*/
+        socket.emit('404Light', 'OFF');
         controlalert('Lights', 'Off All');
     });
 

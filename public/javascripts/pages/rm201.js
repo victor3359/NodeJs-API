@@ -6,8 +6,12 @@ $(document).ready(function() {
     var amperedata = [];
     var powerdata_c = [];
     var chartdata = [];
+    var CO2data = [];
+    var PM25data = [];
+    var RHdata = [];
+    var TEMPdata = [];
 
-    var room = '405';
+    var room = '201';
 
     function controlalert(name, cmd){
         iziToast.show({title:'Command',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
@@ -24,6 +28,15 @@ $(document).ready(function() {
             controlalert('W.C. Light', 'Off');
         }
     });
+    $('#TBL_Light_Switch').click(function () {
+        if(getText('TBL_Light_State') == 'Off'){
+            socket.emit(room + 'TBLLight', 'ON');
+            controlalert('Table Light', 'On');
+        }else{
+            socket.emit(room + 'TBLLight', 'OFF');
+            controlalert('Table Light', 'Off');
+        }
+    });
     $('#RM_Light_Switch').click(function () {
         if(getText('RM_Light_State') == 'Off'){
             socket.emit(room + 'RMLight', 'ON');
@@ -33,41 +46,35 @@ $(document).ready(function() {
             controlalert('Room Lights', 'Off');
         }
     });
-    $('#BDL_Light_Switch').click(function () {
-        if(getText('BDU_Light_State') == 'Off'){
-            socket.emit(room + 'BDUpLight', 'ON');
-            controlalert('BedUp Light', 'On');
+    $('#BTOL_Light_Switch').click(function () {
+        if(getText('BTOL_Light_State') == 'Off'){
+            socket.emit(room + 'BTOLLight', 'ON');
+            controlalert('Outside the Bathroom Lights', 'On');
         }else{
-            socket.emit(room + 'BDUpLight', 'OFF');
-            controlalert('BedUp Light', 'Off');
+            socket.emit(room + 'BTOLLight', 'OFF');
+            controlalert('Outside the Bathroom Lights', 'Off');
         }
     });
-    $('#BDR_Light_Switch').click(function () {
-        if(getText('BDD_Light_State') == 'Off'){
+    $('#BD_Light_Switch').click(function () {
+        if(getText('BD_Light_State') == 'Off'){
+            socket.emit(room + 'BDLeftLight', 'ON');
+            socket.emit(room + 'BDRightLight', 'ON');
+            socket.emit(room + 'BDUpLight', 'ON');
             socket.emit(room + 'BDDownLight', 'ON');
-            controlalert('BedDown Lights', 'On');
+            controlalert('Bed Lights', 'On');
         }else{
+            socket.emit(room + 'BDLeftLight', 'OFF');
+            socket.emit(room + 'BDRightLight', 'OFF');
+            socket.emit(room + 'BDUpLight', 'OFF');
             socket.emit(room + 'BDDownLight', 'OFF');
-            controlalert('BedDown Lights', 'Off');
+            controlalert('Bed Lights', 'Off');
         }
     });
     $('#All_On').click(function () {
-        /*
-        socket.emit(room + 'WCLight', 'ON');
-        socket.emit(room + 'RMLight', 'ON');
-        socket.emit(room + 'BDUpLight', 'ON');
-        socket.emit(room + 'BDDownLight', 'ON');
-        */
         socket.emit(room + 'Light', 'ON');
         controlalert('Lights', 'On All');
     });
     $('#All_Off').click(function () {
-        /*
-        socket.emit(room + 'WCLight', 'OFF');
-        socket.emit(room + 'RMLight', 'OFF');
-        socket.emit(room + 'BDUpLight', 'OFF');
-        socket.emit(room + 'BDDownLight', 'OFF');
-        */
         socket.emit(room + 'Light', 'OFF');
         controlalert('Lights', 'Off All');
     });
@@ -112,13 +119,21 @@ $(document).ready(function() {
         setText('warning_count', data);
     });
 
-    //Room 405 Socket
-    socket.on('rm' + room + '_init', function (data) {
+    //Room 201 Socket
+    socket.on('rm'+ room +'_init', function (data) {
         powerdata.push(data['kWh']);
         powerdata_c.push(data['kW'] * 1000);
+        CO2data.push(data['CO2']);
+        PM25data.push(data['PM25']);
+        RHdata.push(data['RH'] / 100);
+        TEMPdata.push(data['TEMP'] / 100);
 
         new CountUp("widget_countup1", 0,data['kWh'] , 0, 5.0, options).start();
         new CountUp("widget_countup4", 0,data['kW'] * 1000 , 0, 5.0, options).start();
+        new CountUp("widget_countup5", 0,data['CO2'] , 0, 5.0, options).start();
+        new CountUp("widget_countup6", 0,data['PM25'] , 0, 5.0, options).start();
+        new CountUp("widget_countup7", 0,parseInt(data['RH'] / 100) , 0, 5.0, options).start();
+        new CountUp("widget_countup8", 0,parseInt(data['TEMP'] / 100) , 0, 5.0, options).start();
 
         if(data['PWNF']){
             setText("widget_countup2", '活躍');
@@ -127,26 +142,35 @@ $(document).ready(function() {
         }
         setText("widget_countup12", data['kWh']);
         setText("widget_countup42", data['kW'] * 1000);
+        setText("widget_countup52", data['CO2']);
+        setText("widget_countup62", data['PM25']);
+        setText("widget_countup72", data['RH'] / 100);
+        setText("widget_countup82", data['TEMP'] / 100);
 
         if(data['WCL']){
             state('WC_Light_State', 1);
         }else{
             state('WC_Light_State', 0);
         }
-        if(data['RML']){
+        if(data['TBL']){
+            state('TBL_Light_State', 1);
+        }else{
+            state('TBL_Light_State', 0);
+        }
+        if(data['RMC1'] || data['RMC2']){
             state('RM_Light_State', 1);
         }else{
             state('RM_Light_State', 0);
         }
-        if(data['BDUL']){
-            state('BDU_Light_State', 1);
+        if(data['BTOLC1']){
+            state('BTOL_Light_State', 1);
         }else{
-            state('BDU_Light_State', 0);
+            state('BTOL_Light_State', 0);
         }
-        if(data['BDDL']){
-            state('BDD_Light_State', 1);
+        if(data['BDLC1'] || data['BDRC1'] || data['BDUC1'] || data['BDDC1']){
+            state('BD_Light_State', 1);
         }else{
-            state('BDD_Light_State', 0);
+            state('BD_Light_State', 0);
         }
         $("#visitsspark-chart").sparkline(powerdata, {
             type: 'line',
@@ -156,22 +180,6 @@ $(document).ready(function() {
             fillColor: '#e7f5ff',
             tooltipSuffix: ' kWh'
         });
-        $('#salesspark-chart').sparkline(voltagedata,{
-            type: 'line',
-            width: "100%",
-            height: '48',
-            spotColor: '#f0ad4e',
-            lineColor: '#EF6F6C',
-            tooltipSuffix: ' V'
-        });
-        $('#mousespeed').sparkline(amperedata, {
-            type: 'line',
-            height: "48",
-            width: "100%",
-            lineColor: '#0cd32d',
-            fillColor: '#27c5f0',
-            tooltipSuffix: ' mA'
-        });
         $("#rating").sparkline(powerdata_c, {
             type: 'line',
             width: "100%",
@@ -180,29 +188,71 @@ $(document).ready(function() {
             lineColor: '#DF0F7C',
             tooltipSuffix: ' W'
         });
+        $("#CO2_chart").sparkline(CO2data, {
+            type: 'line',
+            width: '100%',
+            height: '48',
+            lineColor: '#4fb7fe',
+            fillColor: '#e7f5ff',
+            tooltipSuffix: ' ppm'
+        });
+        $('#PM25_chart').sparkline(PM25data,{
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#f0ad4e',
+            lineColor: '#EF6F6C',
+            tooltipSuffix: ' μg/m3'
+        });
+        $('#RH_chart').sparkline(RHdata, {
+            type: 'line',
+            height: "48",
+            width: "100%",
+            lineColor: '#0cd32d',
+            fillColor: '#27c5f0',
+            tooltipSuffix: ' %'
+        });
+        $("#TEMP_chart").sparkline(TEMPdata, {
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#FF00FF',
+            lineColor: '#DF0F7C',
+            tooltipSuffix: ' ℃'
+        });
     });
 
-    socket.on('rm'+ room + '_chart_rt', function (data) {
+    socket.on('rm' + room + '_chart_rt', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 data1: parseFloat(data[i]['kW']) * 1000,
                 data2: data[i]['WCL'] * 3000,
-                data3: data[i]['RML'] * 3000,
-                data4: data[i]['BDUL'] * 3000,
-                data5: data[i]['BDDL'] * 3000,
+                data3: data[i]['TBL'] * 3000,
+                data4: data[i]['RMC1'],
+                data5: data[i]['RMC2'],
+                data6: data[i]['BTOLC1'],
+                data7: data[i]['BDLC1'],
+                data8: data[i]['BDRC1'],
+                data9: data[i]['BDUC1'],
+                data10: data[i]['BDDC1'],
                 date: data[i]['TIME']
             });
         }
         updatechartrt();
     });
-    socket.on('rm404_chart_data', function (data) {
+    socket.on('rm'+ room +'_chart_data', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
                 data1: parseFloat(data[i]['kW']) * 1000,
                 data2: data[i]['WCL'] * 3000,
-                data3: data[i]['RML'] * 3000,
-                data4: data[i]['BDLL'] * 3000,
-                data5: data[i]['BDRL'] * 3000,
+                data3: data[i]['TBL'] * 3000,
+                data4: data[i]['RMC1'],
+                data5: data[i]['RMC2'],
+                data6: data[i]['BTOLC1'],
+                data7: data[i]['BDLC1'],
+                data8: data[i]['BDRC1'],
+                data9: data[i]['BDUC1'],
+                data10: data[i]['BDDC1'],
                 date: data[i]['TIME']
             });
         }
@@ -210,9 +260,14 @@ $(document).ready(function() {
     });
 
 
-    socket.on('rm' + room + '_data', function (data) {
+    socket.on('rm' + room +'_data', function (data) {
         powerdata.push(data['kWh']);
         powerdata_c.push(data['kW'] * 1000);
+        CO2data.push(data['CO2']);
+        PM25data.push(data['PM25']);
+        RHdata.push(data['RH'] / 100);
+        TEMPdata.push(data['TEMP'] / 100);
+
         if(data['PWNF']){
             setText("widget_countup2", '活躍');
         }else{
@@ -221,30 +276,47 @@ $(document).ready(function() {
 
         setText("widget_countup1", parseInt(data['kWh']));
         setText("widget_countup4", data['kW'] * 1000);
+        setText("widget_countup5", data['CO2']);
+        setText("widget_countup6", data['PM25']);
+        setText("widget_countup7", parseInt(data['RH'] / 100));
+        setText("widget_countup8", parseInt(data['TEMP'] / 100));
         setText("widget_countup12", data['kWh']);
         setText("widget_countup42", data['kW'] * 1000);
+        setText("widget_countup52", data['CO2']);
+        setText("widget_countup62", data['PM25']);
+        setText("widget_countup72", data['RH'] / 100);
+        setText("widget_countup82", data['TEMP'] / 100);
 
         if(data['WCL']){
             state('WC_Light_State', 1);
         }else{
             state('WC_Light_State', 0);
         }
-        if(data['RML']){
+        if(data['TBL']){
+            state('TBL_Light_State', 1);
+        }else{
+            state('TBL_Light_State', 0);
+        }
+        if(data['RMC1'] || data['RMC2']){
             state('RM_Light_State', 1);
         }else{
             state('RM_Light_State', 0);
         }
-        if(data['BDUL']){
-            state('BDU_Light_State', 1);
+        if(data['BTOLC1']){
+            state('BTOL_Light_State', 1);
         }else{
-            state('BDU_Light_State', 0);
+            state('BTOL_Light_State', 0);
         }
-        if(data['BDDL']){
-            state('BDD_Light_State', 1);
+        if(data['BDLC1'] || data['BDRC1'] || data['BDUC1'] || data['BDDC1']){
+            state('BD_Light_State', 1);
         }else{
-            state('BDD_Light_State', 0);
+            state('BD_Light_State', 0);
         }
 
+        if (CO2data.length > 10) CO2data.shift();
+        if (PM25data.length > 10) PM25data.shift();
+        if (RHdata.length > 10) RHdata.shift();
+        if (TEMPdata.length > 10) TEMPdata.shift();
         if (powerdata.length > 10) powerdata.shift();
         if (powerdata_c.length > 10) powerdata_c.shift();
         if (chartdata.length > 4000) chartdata.shift();
@@ -265,17 +337,48 @@ $(document).ready(function() {
             lineColor: '#DF0F7C',
             tooltipSuffix: ' W'
         });
+        $("#CO2_chart").sparkline(CO2data, {
+            type: 'line',
+            width: '100%',
+            height: '48',
+            lineColor: '#4fb7fe',
+            fillColor: '#e7f5ff',
+            tooltipSuffix: ' ppm'
+        });
+        $('#PM25_chart').sparkline(PM25data,{
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#f0ad4e',
+            lineColor: '#EF6F6C',
+            tooltipSuffix: ' μg/m3'
+        });
+        $('#RH_chart').sparkline(RHdata, {
+            type: 'line',
+            height: "48",
+            width: "100%",
+            lineColor: '#0cd32d',
+            fillColor: '#27c5f0',
+            tooltipSuffix: ' %'
+        });
+        $("#TEMP_chart").sparkline(TEMPdata, {
+            type: 'line',
+            width: "100%",
+            height: '48',
+            spotColor: '#FF00FF',
+            lineColor: '#DF0F7C',
+            tooltipSuffix: ' ℃'
+        });
     });
 
-    socket.on('update_kWh4', function (data) {
+    socket.on('update_kWh2', function (data) {
         var chart=c3.generate({bindto:'#chart_kWh',data:{
             columns:[
-                ['Room 401',data['Rm_401']],
-                ['Room 402',data['Rm_402']],
-                ['Room 403',data['Rm_403']],
-                ['Room 404',data['Rm_404']],
-                ['Room 405',data['Rm_405']],
-                ['Room 406',data['Rm_406']]
+                ['Room 201',data['Rm_201']],
+                ['Room 202',data['Rm_202']],
+                ['Room 203',data['Rm_203']],
+                ['Room 204',data['Rm_204']],
+                ['Room 205',data['Rm_205']]
             ],
             type:'bar',
             colors:
@@ -287,23 +390,23 @@ $(document).ready(function() {
         });
     });
 
-    socket.on('update_pie4', function (data) {
+    socket.on('update_pie2', function (data) {
         var chart1=c3.generate({bindto:'#rmkWh_chart',data:{
-            columns:[['Room 401',data['Rm_401']],['Room 402',data['Rm_402']],['Room 403',data['Rm_403']]
-                ,['Room 404',data['Rm_404']],['Room 405',data['Rm_405']],['Room 406',data['Rm_406']]],type:'donut'},
+            columns:[['Room 201',data['Rm_201']],['Room 202',data['Rm_202']],['Room 203',data['Rm_203']]
+                ,['Room 204',data['Rm_204']],['Room 205',data['Rm_205']]],type:'donut'},
             donut:{title:"Fourth Floor"},
             color:{pattern:['#00c0ef','#0fb0c0','#668cff','#ffb300','#69B3BF']}
         });
         setTimeout(function(){
                 chart1.load({
-                    columns:[["Room 401",data['Rm_401h']],["Room 402",data['Rm_402h']],["Room 403",data['Rm_403h']],
-                        ["Room 404",data['Rm_404h']],["Room 405",data['Rm_405h']],["Room 406",data['Rm_406h']]]
+                    columns:[["Room 201",data['Rm_201h']],["Room 202",data['Rm_202h']],["Room 203",data['Rm_203h']],
+                        ["Room 204",data['Rm_204h']],["Room 205",data['Rm_205h']]]
                 });
             }
             ,4000);
     });
 
-    socket.on('rm'+ room + '_chart_trend', function (data) {
+    socket.on('rm' + room + '_chart_trend', function (data) {
         var chart = AmCharts.makeChart( "chart_trend2", {
             "type": "serial",
             "addClassNames": true,
@@ -353,7 +456,7 @@ $(document).ready(function() {
 
 //   flip js
 
-    $("#top_widget1, #top_widget4").flip({
+    $("#top_widget1, #top_widget4, #top_widget5, #top_widget6, #top_widget7, #top_widget8").flip({
         axis: 'x',
         trigger: 'hover'
     });
@@ -490,7 +593,7 @@ $(document).ready(function() {
                     {
                         "bullet": "none",
                         "id": "AmGraph-3",
-                        "title": "Room Light",
+                        "title": "Table Light",
                         "valueField": "data3",
                         "lineThickness" : 4,
                         "lineColor": "#77DDFF"
@@ -498,7 +601,7 @@ $(document).ready(function() {
                     {
                         "bullet": "none",
                         "id": "AmGraph-4",
-                        "title": "BedLeft Light",
+                        "title": "Room Light C1",
                         "valueField": "data4",
                         "lineThickness" : 4,
                         "lineColor": "#00DD00"
@@ -506,10 +609,50 @@ $(document).ready(function() {
                     {
                         "bullet": "none",
                         "id": "AmGraph-5",
-                        "title": "BedRight Light",
+                        "title": "Room Light C2",
                         "valueField": "data5",
                         "lineThickness" : 4,
                         "lineColor": "#CCFF33"
+                    },
+                    {
+                        "bullet": "none",
+                        "id": "AmGraph-6",
+                        "title": "Bath Light",
+                        "valueField": "data6",
+                        "lineThickness" : 4,
+                        "lineColor": "#668800"
+                    },
+                    {
+                        "bullet": "none",
+                        "id": "AmGraph-7",
+                        "title": "BedLeft Light C1",
+                        "valueField": "data7",
+                        "lineThickness" : 4,
+                        "lineColor": "#FFCC22"
+                    },
+                    {
+                        "bullet": "none",
+                        "id": "AmGraph-8",
+                        "title": "BedRight Light C1",
+                        "valueField": "data8",
+                        "lineThickness" : 4,
+                        "lineColor": "#CC0000"
+                    },
+                    {
+                        "bullet": "none",
+                        "id": "AmGraph-9",
+                        "title": "BedUp Light C1",
+                        "valueField": "data9",
+                        "lineThickness" : 4,
+                        "lineColor": "#cc0a75"
+                    },
+                    {
+                        "bullet": "none",
+                        "id": "AmGraph-10",
+                        "title": "BedDown Light C1",
+                        "valueField": "data10",
+                        "lineThickness" : 4,
+                        "lineColor": "#cc5aa9"
                     }
                 ],
                 "guides": [],
@@ -527,7 +670,7 @@ $(document).ready(function() {
                 },
                 "titles": [
                     {
-                        "id": "Hok_404",
+                        "id": "Hok_201",
                         "size": 15,
                         "text": ""
                     }

@@ -50,17 +50,23 @@ $(document).ready(function() {
         }
     });
     $('#All_On').click(function () {
+        /*
         socket.emit('403WCLight', 'ON');
         socket.emit('403RMLight', 'ON');
         socket.emit('403BDLeftLight', 'ON');
         socket.emit('403BDRightLight', 'ON');
+        */
+        socket.emit('403Light', 'ON');
         controlalert('Lights', 'On All');
     });
     $('#All_Off').click(function () {
+        /*
         socket.emit('403WCLight', 'OFF');
         socket.emit('403RMLight', 'OFF');
         socket.emit('403BDLeftLight', 'OFF');
         socket.emit('403BDRightLight', 'OFF');
+        */
+        socket.emit('403Light', 'OFF');
         controlalert('Lights', 'Off All');
     });
 
