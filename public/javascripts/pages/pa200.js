@@ -10,7 +10,7 @@ $(document).ready(function() {
         iziToast.show({title:'Command',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
     }
 
-    socket.emit('done', 0);
+    socket.emit('done', '200');
 
     //Controller Def Start
     $('#WC_Light_Switch').click(function () {

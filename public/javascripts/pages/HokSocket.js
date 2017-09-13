@@ -1,1 +1,1 @@
-var socket = io.connect('http://hokhouse.ddns.net:10000');
+var socket = io.connect('http://192.168.200.20:10000');

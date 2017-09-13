@@ -6,66 +6,61 @@ $(document).ready(function() {
     var amperedata = [];
     var powerdata_c = [];
     var chartdata = [];
-    var chart_trenddata = [];
 
     function controlalert(name, cmd){
         iziToast.show({title:'Command',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
     }
 
-    socket.emit('done', 0);
+    socket.emit('done', '403');
     //Controller Def Start
     $('#WC_Light_Switch').click(function () {
         if(getText('WC_Light_State') == 'Off'){
-            socket.emit('WCLight', 'ON');
+            socket.emit('403WCLight', 'ON');
             controlalert('W.C. Light', 'On');
         }else{
-            socket.emit('WCLight', 'OFF');
+            socket.emit('403WCLight', 'OFF');
             controlalert('W.C. Light', 'Off');
-        }
-    });
-    $('#WD_Light_Switch').click(function () {
-        if(getText('WD_Light_State') == 'Off'){
-            socket.emit('WDLight', 'ON');
-            controlalert('Window Light', 'On');
-        }else{
-            socket.emit('WDLight', 'OFF');
-            controlalert('Window Light', 'Off');
         }
     });
     $('#RM_Light_Switch').click(function () {
         if(getText('RM_Light_State') == 'Off'){
-            socket.emit('RMLight', 'ON');
+            socket.emit('403RMLight', 'ON');
             controlalert('Room Lights', 'On');
         }else{
-            socket.emit('RMLight', 'OFF');
+            socket.emit('403RMLight', 'OFF');
             controlalert('Room Lights', 'Off');
         }
     });
-    $('#BD_Light_Switch').click(function () {
-        if(getText('BD_Light_State') == 'Off'){
-            socket.emit('BDLeftLight', 'ON');
-            socket.emit('BDRightLight', 'ON');
-            controlalert('Bed Lights', 'On');
+    $('#BDL_Light_Switch').click(function () {
+        if(getText('BDL_Light_State') == 'Off'){
+            socket.emit('403BDLeftLight', 'ON');
+            controlalert('BedLeft Light', 'On');
         }else{
-            socket.emit('BDLeftLight', 'OFF');
-            socket.emit('BDRightLight', 'OFF');
-            controlalert('Bed Lights', 'Off');
+            socket.emit('403BDLeftLight', 'OFF');
+            controlalert('BedLeft Light', 'Off');
+        }
+    });
+    $('#BDR_Light_Switch').click(function () {
+        if(getText('BDR_Light_State') == 'Off'){
+            socket.emit('403BDRightLight', 'ON');
+            controlalert('BedRight Lights', 'On');
+        }else{
+            socket.emit('403BDRightLight', 'OFF');
+            controlalert('BedRight Lights', 'Off');
         }
     });
     $('#All_On').click(function () {
-        socket.emit('WCLight', 'ON');
-        socket.emit('WDLight', 'ON');
-        socket.emit('RMLight', 'ON');
-        socket.emit('BDLeftLight', 'ON');
-        socket.emit('BDRightLight', 'ON');
+        socket.emit('403WCLight', 'ON');
+        socket.emit('403RMLight', 'ON');
+        socket.emit('403BDLeftLight', 'ON');
+        socket.emit('403BDRightLight', 'ON');
         controlalert('Lights', 'On All');
     });
     $('#All_Off').click(function () {
-        socket.emit('WCLight', 'OFF');
-        socket.emit('WDLight', 'OFF');
-        socket.emit('RMLight', 'OFF');
-        socket.emit('BDLeftLight', 'OFF');
-        socket.emit('BDRightLight', 'OFF');
+        socket.emit('403WCLight', 'OFF');
+        socket.emit('403RMLight', 'OFF');
+        socket.emit('403BDLeftLight', 'OFF');
+        socket.emit('403BDRightLight', 'OFF');
         controlalert('Lights', 'Off All');
     });
 
@@ -116,6 +111,7 @@ $(document).ready(function() {
 
         new CountUp("widget_countup1", 0,data['kWh'] , 0, 5.0, options).start();
         new CountUp("widget_countup4", 0,data['kW'] * 1000 , 0, 5.0, options).start();
+
         if(data['PWNF']){
             setText("widget_countup2", '活躍');
         }else{
@@ -129,20 +125,20 @@ $(document).ready(function() {
         }else{
             state('WC_Light_State', 0);
         }
-        if(data['WDL']){
-            state('WD_Light_State', 1);
-        }else{
-            state('WD_Light_State', 0);
-        }
-        if(data['RMC1'] || data['RMC2'] || data['RMC3']){
+        if(data['RML']){
             state('RM_Light_State', 1);
         }else{
             state('RM_Light_State', 0);
         }
-        if(data['BDLC1'] || data['BDRC1']){
-            state('BD_Light_State', 1);
+        if(data['BDLL']){
+            state('BDL_Light_State', 1);
         }else{
-            state('BD_Light_State', 0);
+            state('BDL_Light_State', 0);
+        }
+        if(data['BDRL']){
+            state('BDR_Light_State', 1);
+        }else{
+            state('BDR_Light_State', 0);
         }
         $("#visitsspark-chart").sparkline(powerdata, {
             type: 'line',
@@ -181,14 +177,11 @@ $(document).ready(function() {
     socket.on('rm403_chart_rt', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
-                hok_w: parseFloat(data[i]['kW']) * 1000,
-                hok_wc_l: data[i]['WCL'] * 3000,
-                hok_wd_l: data[i]['WDL'] * 3000,
-                hok_rm_c1: data[i]['RMC1'],
-                hok_rm_c2: data[i]['RMC2'],
-                hok_rm_c3: data[i]['RMC3'],
-                hok_bdl_c1: data[i]['BDLC1'],
-                hok_bdr_c1: data[i]['BDRC1'],
+                data1: parseFloat(data[i]['kW']) * 1000,
+                data2: data[i]['WCL'] * 3000,
+                data3: data[i]['RML'] * 3000,
+                data4: data[i]['BDLL'] * 3000,
+                data5: data[i]['BDRL'] * 3000,
                 date: data[i]['TIME']
             });
         }
@@ -197,14 +190,11 @@ $(document).ready(function() {
     socket.on('rm403_chart_data', function (data) {
         for(var i=data.length - 1;i >= 0;i--) {
             chartdata.push({
-                hok_w: parseFloat(data[i]['kW']) * 1000,
-                hok_wc_l: data[i]['WCL'] * 3000,
-                hok_wd_l: data[i]['WDL'] * 3000,
-                hok_rm_c1: data[i]['RMC1'],
-                hok_rm_c2: data[i]['RMC2'],
-                hok_rm_c3: data[i]['RMC3'],
-                hok_bdl_c1: data[i]['BDLC1'],
-                hok_bdr_c1: data[i]['BDRC1'],
+                data1: parseFloat(data[i]['kW']) * 1000,
+                data2: data[i]['WCL'] * 3000,
+                data3: data[i]['RML'] * 3000,
+                data4: data[i]['BDLL'] * 3000,
+                data5: data[i]['BDRL'] * 3000,
                 date: data[i]['TIME']
             });
         }
@@ -231,22 +221,21 @@ $(document).ready(function() {
         }else{
             state('WC_Light_State', 0);
         }
-        if(data['WDL']){
-            state('WD_Light_State', 1);
-        }else{
-            state('WD_Light_State', 0);
-        }
-        if(data['RMC1'] || data['RMC2'] || data['RMC3']){
+        if(data['RML']){
             state('RM_Light_State', 1);
         }else{
             state('RM_Light_State', 0);
         }
-        if(data['BDLC1'] || data['BDRC1']){
-            state('BD_Light_State', 1);
+        if(data['BDLL']){
+            state('BDL_Light_State', 1);
         }else{
-            state('BD_Light_State', 0);
+            state('BDL_Light_State', 0);
         }
-
+        if(data['BDRL']){
+            state('BDR_Light_State', 1);
+        }else{
+            state('BDR_Light_State', 0);
+        }
 
         if (powerdata.length > 10) powerdata.shift();
         if (powerdata_c.length > 10) powerdata_c.shift();
@@ -478,7 +467,7 @@ $(document).ready(function() {
                         "bullet": "none",
                         "id": "AmGraph-1",
                         "title": "Power",
-                        "valueField": "hok_w",
+                        "valueField": "data1",
                         "lineThickness" : 4,
                         "lineColor": "#000088"
                     },
@@ -486,57 +475,33 @@ $(document).ready(function() {
                         "bullet": "none",
                         "id": "AmGraph-2",
                         "title": "W.C. Light",
-                        "valueField": "hok_wc_l",
+                        "valueField": "data2",
                         "lineThickness" : 4,
                         "lineColor": "#00BBFF"
                     },
                     {
                         "bullet": "none",
                         "id": "AmGraph-3",
-                        "title": "Window Light",
-                        "valueField": "hok_wd_l",
+                        "title": "Room Light",
+                        "valueField": "data3",
                         "lineThickness" : 4,
                         "lineColor": "#77DDFF"
                     },
                     {
                         "bullet": "none",
                         "id": "AmGraph-4",
-                        "title": "Room_C1 Light",
-                        "valueField": "hok_rm_c1",
+                        "title": "BedLeft Light",
+                        "valueField": "data4",
                         "lineThickness" : 4,
                         "lineColor": "#00DD00"
                     },
                     {
                         "bullet": "none",
                         "id": "AmGraph-5",
-                        "title": "Room_C2 Light",
-                        "valueField": "hok_rm_c2",
+                        "title": "BedRight Light",
+                        "valueField": "data5",
                         "lineThickness" : 4,
                         "lineColor": "#CCFF33"
-                    },
-                    {
-                        "bullet": "none",
-                        "id": "AmGraph-6",
-                        "title": "Room_C3 Light",
-                        "valueField": "hok_rm_c3",
-                        "lineThickness" : 4,
-                        "lineColor": "#668800"
-                    },
-                    {
-                        "bullet": "none",
-                        "id": "AmGraph-7",
-                        "title": "BedLeft_C1 Light",
-                        "valueField": "hok_bdl_c1",
-                        "lineThickness" : 4,
-                        "lineColor": "#FFCC22"
-                    },
-                    {
-                        "bullet": "none",
-                        "id": "AmGraph-8",
-                        "title": "BedRight_C1 Light",
-                        "valueField": "hok_bdr_c1",
-                        "lineThickness" : 4,
-                        "lineColor": "#CC0000"
                     }
                 ],
                 "guides": [],
