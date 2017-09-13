@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 
-var url = "http://localhost:8080/r402";
 
 /* GET home page. */
 /*

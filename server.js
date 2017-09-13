@@ -3304,7 +3304,7 @@ function UpdateChart(room){
 app.use('/', route);
 //Start the server
 app.listen(port);
-console.log('Big5-API is listening on port ' + port);
+console.log('Big5-API is listening on port ' + port + "<-- Unused");
 var state = 'ON';
 function ONOFF(){
     if(state == 'ON'){
