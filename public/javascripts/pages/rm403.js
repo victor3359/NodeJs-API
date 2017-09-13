@@ -292,7 +292,7 @@ $(document).ready(function() {
                         ["Room 404",data['Rm_404h']],["Room 405",data['Rm_405h']],["Room 406",data['Rm_406h']]]
                 });
             }
-            ,8000);
+            ,4000);
     });
 
     socket.on('rm403_chart_trend', function (data) {

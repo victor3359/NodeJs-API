@@ -965,6 +965,52 @@ function Init(room){
             break;
     }
     //General Code
+    if(room > '400'){
+        mongodb.connect(url, function (err, db) {
+            //todo: Fourth Floor Circle Chart
+            db.collection('Device_info').find({Room_num: {$gt: 400}}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
+                if (mongoError) throw mongoError;
+                objects.sort(function (a, b) {
+                    return a.Room_num - b.Room_num;
+                });
+                var rmkWh = {
+                    Rm_401: objects[0]['kW_tot'],
+                    Rm_402: objects[1]['kW_tot'],
+                    Rm_403: objects[2]['kW_tot'],
+                    Rm_404: objects[3]['kW_tot'],
+                    Rm_405: objects[4]['kW_tot'],
+                    Rm_406: objects[5]['kW_tot'],
+                    Rm_401h: objects[0]['kWh_tot'],
+                    Rm_402h: objects[1]['kWh_tot'],
+                    Rm_403h: objects[2]['kWh_tot'],
+                    Rm_404h: objects[3]['kWh_tot'],
+                    Rm_405h: objects[4]['kWh_tot'],
+                    Rm_406h: objects[5]['kWh_tot']
+                };
+                socket.emit('update_pie4', rmkWh);
+                db.close();
+            });
+        });
+        mongodb.connect(url, function(err, db){
+            //todo: Fourth Floor Bar Chart
+            db.collection('Device_info').find({Room_num: {$gt: 400}}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
+                if (mongoError) throw mongoError;
+                objects.sort(function (a, b) {
+                    return a.Room_num - b.Room_num;
+                });
+                var rmkWh = {
+                    Rm_401: objects[0]['kW_tot'] * 1000,
+                    Rm_402: objects[1]['kW_tot'] * 1000,
+                    Rm_403: objects[2]['kW_tot'] * 1000,
+                    Rm_404: objects[3]['kW_tot'] * 1000,
+                    Rm_405: objects[4]['kW_tot'] * 1000,
+                    Rm_406: objects[5]['kW_tot'] * 1000
+                };
+                socket.emit('update_kWh4', rmkWh);
+                db.close();
+            });
+        });
+    }
     mongodb.connect(url, function (err, db) {
         if(err)throw err;
         //todo: Init ErrorEvent Data
@@ -1159,31 +1205,6 @@ function Update(room){
             break;
     }
     if(room > '400'){
-        mongodb.connect(url, function (err, db) {
-            //todo: Fourth Floor Circle Chart
-            db.collection('Device_info').find({Room_num: {$gt: 400}}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
-                if (mongoError) throw mongoError;
-                objects.sort(function (a, b) {
-                    return a.Room_num - b.Room_num;
-                });
-                var rmkWh = {
-                    Rm_401: objects[0]['kW_tot'],
-                    Rm_402: objects[1]['kW_tot'],
-                    Rm_403: objects[2]['kW_tot'],
-                    Rm_404: objects[3]['kW_tot'],
-                    Rm_405: objects[4]['kW_tot'],
-                    Rm_406: objects[5]['kW_tot'],
-                    Rm_401h: objects[0]['kWh_tot'],
-                    Rm_402h: objects[1]['kWh_tot'],
-                    Rm_403h: objects[2]['kWh_tot'],
-                    Rm_404h: objects[3]['kWh_tot'],
-                    Rm_405h: objects[4]['kWh_tot'],
-                    Rm_406h: objects[5]['kWh_tot']
-                };
-                socket.emit('update_pie4', rmkWh);
-                db.close();
-            });
-        });
         mongodb.connect(url, function(err, db){
             //todo: Fourth Floor Bar Chart
             db.collection('Device_info').find({Room_num: {$gt: 400}}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
