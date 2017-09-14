@@ -521,7 +521,7 @@ $(document).ready(function() {
                 "balloon": {},
                 "legend": {
                     "enabled": true,
-                    "useGraphSettings": true
+                    "useGraphSettings": false
                 },
                 "titles": [
                     {

@@ -494,11 +494,11 @@ $(document).ready(function() {
                 "balloon": {},
                 "legend": {
                     "enabled": true,
-                    "useGraphSettings": true
+                    "useGraphSettings": false
                 },
                 "titles": [
                     {
-                        "id": "Hok_201",
+                        "id": "Hok_204",
                         "size": 15,
                         "text": ""
                     }

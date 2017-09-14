@@ -523,11 +523,11 @@ $(document).ready(function() {
                 "balloon": {},
                 "legend": {
                     "enabled": true,
-                    "useGraphSettings": true
+                    "useGraphSettings": false
                 },
                 "titles": [
                     {
-                        "id": "Hok_404",
+                        "id": "Hok_405",
                         "size": 15,
                         "text": ""
                     }
