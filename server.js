@@ -3529,9 +3529,11 @@ socket.sockets.on('connection', function (socket) {
                 oldInterval = setInterval(function(){Update(room);}, 3000);
                 if(oldchartInterval) {
                     clearInterval(oldchartInterval);
+                    console.log('Interval Cleared.');
                 }
                 if(room != '200' && room != '300' && room != '400') {
                     oldchartInterval = setInterval(function(){UpdateChart(room);}, 60000);
+                    console.log('Interval Setup.')
                 }
                 updateroom = room;
                 console.log('Done Again.');
