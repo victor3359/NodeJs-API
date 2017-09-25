@@ -1,1 +1,1 @@
-var socket = io.connect('http://core.icp-si.com:63123');
+var socket = io.connect('http://localhost:63123');

@@ -4,8 +4,8 @@ var port = 8080;
 var cors = require('cors');
 var date = require('date-and-time');
 
-var mqtturl = 'tcp://192.168.101.30';
-var url = "mongodb://192.168.101.20:27017/hok";
+var mqtturl = 'tcp://core.icp-si.com';
+var url = "mongodb://core.icp-si.com:10807/hok";
 
 var now = new Date();
 var RealTimeDate = date.addDays(now, -1);
@@ -3274,7 +3274,7 @@ function Init(room){
     if(room > '400'){
         mongodb.connect(url, function (err, db) {
             //todo: Fourth Floor Circle Chart
-            db.collection('Device_info').find({Room_num: {$gt: 400}}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
+            db.collection('Device_info').find({$and:[{Room_num:{$gt: 400}},{Room_num: {$lt: 500}}]}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
                 if (mongoError) throw mongoError;
                 objects.sort(function (a, b) {
                     return a.Room_num - b.Room_num;
@@ -3299,7 +3299,7 @@ function Init(room){
         });
         mongodb.connect(url, function(err, db){
             //todo: Fourth Floor Bar Chart
-            db.collection('Device_info').find({Room_num: {$gt: 400}}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
+            db.collection('Device_info').find({$and:[{Room_num:{$gt: 400}},{Room_num: {$lt: 500}}]}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
                 if (mongoError) throw mongoError;
                 objects.sort(function (a, b) {
                     return a.Room_num - b.Room_num;
@@ -3788,7 +3788,7 @@ function UpdateChart(room){
         case '209':
             mongodb.connect(url, function(err, db){
                 //todo: Update Second Floor - RealTime Chart
-                db.collection('Device_info').find({Room_num: 200}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 200}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3802,7 +3802,7 @@ function UpdateChart(room){
         case '309':
             mongodb.connect(url, function(err, db){
                 //todo: Update Third Floor - RealTime Chart
-                db.collection('Device_info').find({Room_num: 300}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 300}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3816,7 +3816,7 @@ function UpdateChart(room){
         case '409':
             mongodb.connect(url, function(err, db){
                 //todo: Update Fourth Floor - RealTime Chart
-                db.collection('Device_info').find({Room_num: 400}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 400}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3830,7 +3830,7 @@ function UpdateChart(room){
         case '201':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 201 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 201}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 201}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3857,7 +3857,7 @@ function UpdateChart(room){
         case '202':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 202 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 202}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 202}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3877,7 +3877,7 @@ function UpdateChart(room){
         case '203':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 203 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 203}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 203}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3895,7 +3895,7 @@ function UpdateChart(room){
         case '204':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 204 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 204}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 204}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3913,7 +3913,7 @@ function UpdateChart(room){
         case '205':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 205 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 205}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 205}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3930,7 +3930,7 @@ function UpdateChart(room){
         case '301':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 301 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 301}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 301}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3951,7 +3951,7 @@ function UpdateChart(room){
         case '302':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 302 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 302}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 302}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3971,7 +3971,7 @@ function UpdateChart(room){
         case '303':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 303 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 303}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 303}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -3989,7 +3989,7 @@ function UpdateChart(room){
         case '304':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 304 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 304}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 304}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -4007,7 +4007,7 @@ function UpdateChart(room){
         case '305':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 305 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 305}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 305}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -4025,7 +4025,7 @@ function UpdateChart(room){
         case '401':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 401 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 401}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 401}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -4046,7 +4046,7 @@ function UpdateChart(room){
         case '402':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 402 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 402}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 402}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -4067,7 +4067,7 @@ function UpdateChart(room){
         case '403':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 403 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 403}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 403}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kWh: objects[0]['kWh_tot'],
@@ -4086,7 +4086,7 @@ function UpdateChart(room){
         case '404':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 404 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 404}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 404}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -4105,7 +4105,7 @@ function UpdateChart(room){
         case '405':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 405 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 405}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 405}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -4123,7 +4123,7 @@ function UpdateChart(room){
         case '406':
             mongodb.connect(url, function(err, db){
                 //todo: Update Room 406 - RealTime Chart
-                db.collection('Device_info').find({Room_num: 406}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 406}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -4144,7 +4144,7 @@ function UpdateChart(room){
         case '200':
             mongodb.connect(url, function(err, db){
                 //todo: Update Public Area Second Floor - RealTime Chart
-                db.collection('Device_info').find({Room_num: 200}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 200}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -4158,7 +4158,7 @@ function UpdateChart(room){
         case '300':
             mongodb.connect(url, function(err, db){
                 //todo: Update Public Area Third Floor - RealTime Chart
-                db.collection('Device_info').find({Room_num: 300}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 300}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -4172,7 +4172,7 @@ function UpdateChart(room){
         case '400':
             mongodb.connect(url, function(err, db){
                 //todo: Update Public Area Fourth Floor - RealTime Chart
-                db.collection('Device_info').find({Room_num: 400}).sort({_id: -1}).limit(20).toArray(function (mongoError, objects) {
+                db.collection('Device_info').find({Room_num: 400}).sort({_id: -1}).limit(30).toArray(function (mongoError, objects) {
                     if (mongoError) throw mongoError;
                     var data = {
                         kW: objects[0]['kW_tot'],
@@ -4245,7 +4245,7 @@ function UpdateChart(room){
     if(room > '400'){
         mongodb.connect(url, function(err, db){
             //todo: Fourth Floor Bar Chart
-            db.collection('Device_info').find({Room_num: {$gt: 400}}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
+            db.collection('Device_info').find({$and:[{Room_num:{$gt: 400}},{Room_num: {$lt: 500}}]}).sort({_id: -1}).limit(6).toArray(function (mongoError, objects) {
                 if (mongoError) throw mongoError;
                 objects.sort(function (a, b) {
                     return a.Room_num - b.Room_num;
