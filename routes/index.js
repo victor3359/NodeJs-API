@@ -38,6 +38,24 @@ router.get('/pa400', function (req, res, next) {
         chart: 'chartdiv'
     });
 });
+router.get('/rm200', function (req, res, next) {
+    res.render('rm200', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm300', function (req, res, next) {
+    res.render('rm300', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
+router.get('/rm400', function (req, res, next) {
+    res.render('rm400', {
+        title: 'Hok House',
+        chart: 'chartdiv'
+    });
+});
 router.get('/rm201', function (req, res, next) {
     res.render('rm201', {
         title: 'Hok House',

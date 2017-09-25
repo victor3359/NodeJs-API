@@ -9,7 +9,13 @@ $(document).ready(function() {
     var chart_trenddata = [];
 
     function controlalert(name, cmd){
-        iziToast.show({title:'Command',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
+        iziToast.show({
+            title:'Command',
+            message:'Turn ' + cmd + ' the ' + name + '.' ,
+            color:'#00cc99',
+            position:'bottomRight',
+            timeout: 500
+        });
     }
 
     socket.emit('done', '402');

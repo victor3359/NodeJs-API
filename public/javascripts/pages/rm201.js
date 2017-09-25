@@ -14,9 +14,14 @@ $(document).ready(function() {
     var room = '201';
 
     function controlalert(name, cmd){
-        iziToast.show({title:'Command',message:'Turn ' + cmd + ' the ' + name + '.' ,color:'#00cc99',position:'bottomRight'});
+        iziToast.show({
+            title:'Command',
+            message:'Turn ' + cmd + ' the ' + name + '.' ,
+            color:'#00cc99',
+            position:'bottomRight',
+            timeout: 500
+        });
     }
-
     socket.emit('done', room);
     //Controller Def Start
     $('#WC_Light_Switch').click(function () {
